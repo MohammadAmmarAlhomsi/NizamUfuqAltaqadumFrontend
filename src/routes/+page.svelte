@@ -1,8 +1,7 @@
-<h1>السلام عليكم ورحمة الله وبركاته</h1>
+<script>
+    import { onMount } from "svelte";
 
-<style>
-    h1 {
-        font-family: var(--font-main);
-        color: red;
-    }
-</style>
+    onMount(() => {
+        window.location.href = '/signin'
+    })
+</script>

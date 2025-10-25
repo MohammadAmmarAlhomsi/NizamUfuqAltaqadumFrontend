@@ -1,1 +1,1 @@
-export const host = 'https://www.dawrtna.com:8000'
+export const host = 'https://dawrtna.com:8000'

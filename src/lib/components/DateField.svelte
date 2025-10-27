@@ -53,7 +53,7 @@
 
     p {
         margin-inline-end: 20px;
-        width: 150px;
+        width: 100px;
     }
 
     button {
@@ -66,5 +66,6 @@
 		cursor: pointer;
         box-shadow: 0px 3px 3px 3px rgba(0, 0, 0, 0.11);
         font-size: 16px;
+        width: 420px;
 	}
 </style>

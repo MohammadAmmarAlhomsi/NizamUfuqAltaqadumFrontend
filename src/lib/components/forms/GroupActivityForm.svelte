@@ -1,6 +1,7 @@
 <script>
   import { addGroupActivities } from "$lib/sdk/halqa";
   import Button from "../Button.svelte";
+  import DateField from "../DateField.svelte";
   import FormInputField from "../FormInputField.svelte";
   import TextAreaField from "../TextAreaField.svelte";
 
@@ -14,26 +15,22 @@
   let students = $state([]);
   let activityName = $state("");
   let notes = $state("");
-  let studentWeights = $state({}); // { studentId: weight }
+  let studentWeights = $state({});
   let errorText = $state("");
+  let date = $state(new Date());
 
-  // Load students when halqa changes
   $effect(() => {
     if (halqa != null) {
       students = halqa.students ?? [];
     }
   });
 
-  // Initialize student weights when students are loaded
   $effect(() => {
     if (halqa && Object.keys(studentWeights).length === 0) {
       halqa.students.forEach(s => studentWeights[s.id] = 0);
     }
   });
 
-  /**
-   * Validate form fields
-   */
   function validateInput() {
     if (!activityName || activityName.trim().length === 0) {
       errorText = "يرجى إدخال اسم النشاط.";
@@ -55,9 +52,6 @@
     return true;
   }
 
-  /**
-   * Register the group activity (multiple students)
-   */
   async function handleRegister() {
     if (!validateInput()) return;
 
@@ -73,7 +67,7 @@
     const dto = {
       halqaId: halqa.id,
       name: activityName,
-      notes,
+      notes, date,
       weights: activities.map(a => ({ studentId: a.studentId, weight: a.weight }))
     };
 
@@ -85,7 +79,6 @@
         return;
       }
 
-      // Reset form
       activityName = "";
       notes = "";
       for (const id in studentWeights) studentWeights[id] = 0;
@@ -129,7 +122,11 @@
     </div>
 
     <div style="height: 25px;"></div>
-
+    
+    <DateField label="التاريخ" bind:value={date}/>
+    
+    <div style="height: 25px;"></div>
+    
     <TextAreaField bind:value={notes} label="الملاحظات" />
     
     <div style="height: 15px;"></div>

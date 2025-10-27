@@ -31,6 +31,12 @@
 <style>
     button {
         position: relative;
+        transition: all ease-in-out 0.3s;
+
+    }
+
+    button:hover {
+        transform: scale(1.1);
     }
 
     p {
@@ -53,6 +59,7 @@
 
     .is-highlighted {
         background: yellow;
+        transform: scale(1.1);
     }
 
     .is-cancelled {
@@ -63,12 +70,12 @@
         background: rgb(190, 255, 190);
     }
 
-    .is-cancelled-today {
-        transform: scale(1.1);
-    }
+    /* .is-cancelled-today {
+        transform: scale(1.0);
+    } */
 
     .is-recited-today {
-        transform: scale(1.1);
+        /* transform: scale(1.0); */
         background: rgb(121, 255, 121);
     }
 </style>

@@ -54,6 +54,7 @@
         padding: 5px;
         box-sizing: border-box;
         margin-bottom: 15px;
+        font-size: 16px;
 
         height: 150px;
 

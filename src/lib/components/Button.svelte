@@ -4,7 +4,7 @@
 
 <button {...props} {disabled} 
     class:filled={filled}
-    class:empty={!filled} {onclick}
+    class:empty={!filled} onclick={(e) => {e.stopPropagation(); onclick();}}
     class:disabled={disabled}
     style={`cursor: ${!disabled ? 'pointer' : ''}; width: ${width}`}>
     {@render children?.()}

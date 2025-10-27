@@ -219,7 +219,13 @@
     </div>
 
     <div class="ajza-container">
-        <p class="ajza-title">الأجزاء</p>
+        <div class="title-container">
+            <!-- <div style="width: 80px;"></div> -->
+            <!-- <div style="flex: 1;"></div> -->
+            <p class="ajza-title">الأجزاء</p>
+            <!-- <div style="flex: 1;"></div> -->
+            <!-- <Button width='80px'>رجوع</Button> -->
+        </div>
 
         <div class="ajza-grid">
             {#each ajzaNumbers as juzuNumber}
@@ -260,6 +266,11 @@
         background: #f5f6f8;
         padding-bottom: 50px;
         box-sizing: border-box;
+    }
+
+    .title-container {
+        display: flex;
+        flex-direction: row;
     }
 
     .student-name {

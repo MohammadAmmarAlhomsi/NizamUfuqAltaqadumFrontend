@@ -31,5 +31,6 @@
         flex: 1;
         height: 100%;
         box-sizing: border-box;
+        font-size: 16px;
     }
 </style>

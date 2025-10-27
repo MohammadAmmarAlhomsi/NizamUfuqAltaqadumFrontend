@@ -64,7 +64,9 @@
         {#if halqaAttendanceRecord != null}
             <h1>{dayjs(halqaAttendanceRecord.attendanceDay.date).format('dddd DD/MM/YYYY')}</h1>
             <div style="flex: 1;"></div>
-            <h1>حضور {studentAttendanceRecord?.student.fullName}</h1>
+            <div style="position: absolute; left: 50%; transform: translate(-50%, 0);">
+                <h1>حضور {studentAttendanceRecord?.student.fullName}</h1>
+            </div>
         {/if}
     </Header>
 

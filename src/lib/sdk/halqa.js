@@ -645,6 +645,82 @@ export async function addIndividualActivity(activity) {
 }
 
 /**
+ * Deletes a page recitation record for a student.
+ * @param {string} pageRecitationId - The GUID of the page recitation record to delete.
+ * @returns {Promise<void>}
+ * @throws Will throw an error if the request fails.
+ */
+export async function deletePageRecitationRecordAsync(pageRecitationId) {
+    try {
+        const { token } = loadAccessToken(); // Your function to load the auth token
+
+        const response = await fetch(`${host}/api/halqa/student/attendance/page-recitation/${pageRecitationId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.status === 403) {
+            throw new Error("You do not have permission to delete this page recitation record.");
+        }
+
+        if (response.status === 404) {
+            throw new Error("Page recitation record not found.");
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || "Failed to delete page recitation record.");
+        }
+
+        return;
+    } catch (error) {
+        console.error("deletePageRecitationRecordAsync error:", error);
+        throw error;
+    }
+}
+
+/**
+ * Deletes a page recitation reward cancellation record for a student.
+ * @param {string} pageRecitationRewardRecordId - The GUID of the reward cancellation record to delete.
+ * @returns {Promise<void>}
+ * @throws Will throw an error if the request fails.
+ */
+export async function deletePageRecitationRewardCancellationRecordAsync(pageRecitationRewardRecordId) {
+    try {
+        const { token } = loadAccessToken();
+
+        const response = await fetch(`${host}/api/halqa/student/attendance/page-recitation-reward-record/${pageRecitationRewardRecordId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.status === 403) {
+            throw new Error("You do not have permission to delete this reward cancellation record.");
+        }
+
+        if (response.status === 404) {
+            throw new Error("Reward cancellation record not found.");
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || "Failed to delete reward cancellation record.");
+        }
+
+        return;
+    } catch (error) {
+        console.error("deletePageRecitationRewardCancellationRecordAsync error:", error);
+        throw error;
+    }
+}
+
+/**
  * Adds a group activity record for a specific halqa.
  *
  * @param {Object} dto - Group activity details.

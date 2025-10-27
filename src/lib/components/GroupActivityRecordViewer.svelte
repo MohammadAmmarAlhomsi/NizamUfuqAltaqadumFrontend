@@ -42,7 +42,7 @@
     <div class="activity-info">
       <h2 class="activity-name">{groupActivity?.name ?? "—"}</h2>
       <span class="activity-date">
-        {groupActivity?.createdAt ? new Date(groupActivity.createdAt).toLocaleDateString("ar") : "—"}
+        {groupActivity?.happenedAt ? new Date(groupActivity.happenedAt).toLocaleDateString("ar") : "—"}
       </span>
       {#if groupActivity?.notes && groupActivity.notes.trim().length > 0}
         <p class="activity-notes">📝 {groupActivity.notes}</p>
@@ -55,17 +55,17 @@
   </div>
 
     <div class="participants-container">
-        {#if participants.length > 0}
-        {#each participants as p}
-            <div class="participant-row">
-            <span class="student-name">{p.student?.fullName ?? "—"}</span>
-            <span class="weight">النقاط المضافة: {p.weight}</span>
-            </div>
-        {/each}
-        {:else}
-        <p class="no-participants">لا يوجد طلاب مشاركين بعد.</p>
-        {/if}
-    </div>
+      {#if participants.length > 0}
+          {#each participants as p}
+              <div class="participant-row">
+                  <span class="student-name">{p.student?.fullName ?? "—"}</span>
+                  <span class="weight">النقاط المضافة: {p.weight}</span>
+              </div>
+          {/each}
+      {:else}
+          <p class="no-participants">لا يوجد طلاب مشاركين بعد.</p>
+      {/if}
+  </div>
 </div>
 
 <style>
@@ -160,6 +160,20 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  /* scrollable */
+  max-height: calc((8px + 8px + 12px + 8px) * 8); /* rough calculation per row */
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.participants-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.participants-container::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 3px;
 }
 
 .participant-row {

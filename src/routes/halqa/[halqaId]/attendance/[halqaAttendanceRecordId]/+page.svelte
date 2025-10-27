@@ -41,8 +41,9 @@
     <Header>
         {#if attendanceRecord != null}
             <h1>{dayjs(attendanceRecord.attendanceDay.date).format('dddd DD/MM/YYYY')}</h1>
-            <div style="flex: 1;"></div>
-            <h1>حضور الحلقة</h1>
+            <div style="position: absolute; left: 50%; transform: translate(-50%, 0);">
+                <h1>حضور الحلقة</h1>
+            </div>
         {/if}
     </Header>
 

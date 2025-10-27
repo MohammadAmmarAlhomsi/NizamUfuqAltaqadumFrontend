@@ -6,11 +6,12 @@
     import NotesForm from "./NotesForm.svelte";
 
     import { page } from "$app/state";
-    import { fetchHalqaById, updateStudentAttendance } from "$lib/sdk/halqa";
+    import { fetchHalqaById, updateHalqaAsync, updateStudentAttendance } from "$lib/sdk/halqa";
     import { onMount } from "svelte";
     
     import dayjs from 'dayjs';
     import 'dayjs/locale/ar';
+  import { updateHalqaAttendance } from "$lib/sdk/halqa-attendance-record";
 
     dayjs.locale('ar');
 
@@ -35,11 +36,15 @@
             console.log($state.snapshot(halqa));
         }
 
+
+    })
+
+    $effect(() => {
         if (halqaAttendance != null) {
             console.log('halqa attendance record:');
             console.log($state.snapshot(halqaAttendance));
         }
-    })
+    });
 
     onMount(() => {
         if (halqa != null) {
@@ -47,7 +52,7 @@
         }    
     })
 
-    async function handleSaveNotes(notes) {
+    async function handleSaveStudentAttendanceNotes(notes) {
         halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx].notes = notes;
         
         let studentAttendanceRecord = halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx];
@@ -85,13 +90,23 @@
     async function handleStudentAttendanceChange(studentAttendanceRecord, newValue) {
         await saveStudentRecord(studentAttendanceRecord);
         if (studentAttendanceRecord.status == 'Attended') {
-            window.location.href = `/halqa/${halqa.id}/attendance/${halqaAttendance.id}/student-attendance/${studentAttendanceRecord.id}`;
+            // window.location.href = `/halqa/${halqa.id}/attendance/${halqaAttendance.id}/student-attendance/${studentAttendanceRecord.id}`;
         } else if (studentAttendanceRecord.status == 'AbscentWithExecuse') {
             notesSelectedStudentAttendanceRecordIdx = halqaAttendance.studentsAttendanceRecords.findIndex(record => record.id == studentAttendanceRecord.id);
             showNotesMenu = true;
         }
     }
 
+    async function handleSubmit() {
+        try {
+            let dto = { attendanceDayId: halqaAttendance.attendanceDayId, notes: halqaAttendance.notes };
+            await updateHalqaAttendance(halqaAttendance.id, dto);
+            window.location.href = `/halqa/${halqa.id}?tabIdx=1`;
+        } catch (e) { 
+            alert('حدث خطأ أثناء تنزيل الحلقة');
+            console.error(e);
+        }
+    }
 </script>
 
 <div class='container'>
@@ -113,13 +128,15 @@
 
     <div style="height: 50px;"></div>
     <div style="height: 100px;">
-        <TextAreaField label="ملاحظات"></TextAreaField>
+        {#if halqaAttendance != null}
+            <TextAreaField bind:value={halqaAttendance.notes} label="ملاحظات"></TextAreaField>
+        {/if}
     </div>
 
     <div style="height: 20px;"></div>
 
     <div class="submit-button-container">
-        <Button>حفظ</Button>
+        <Button onclick={handleSubmit}>حفظ</Button>
     </div>
 
     <div style="height: 50px;"></div>
@@ -130,7 +147,7 @@
         startingNotes={halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx]?.notes} 
         student={halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx]?.student}
         onclickCancel = {handleCancelNotesTyping}
-        onclickSave = {handleSaveNotes}
+        onclickSave = {handleSaveStudentAttendanceNotes}
     />
 {/if}
 

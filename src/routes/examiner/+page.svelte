@@ -9,12 +9,15 @@
 
     import dayjs from "dayjs";
     import "dayjs/locale/ar";
+    import { page } from '$app/state';
 
     let examiner = $state(null);
     let halqat = $state([]);
     let halqatOptions = $state([]);
     let selectedHalqaId = $state('');
     let selectedHalqa = $derived(halqat.find(h => h.id === selectedHalqaId) || null);
+    
+    let initialHalqaId = page.url.searchParams.get('selectedHalqaId');
 
     dayjs.locale("ar");
 
@@ -27,12 +30,14 @@
 
         await loadExaminer();
         await loadHalqat();
+
+        selectedHalqaId = initialHalqaId ?? '';
     });
 
     async function loadExaminer() {
         try {
             examiner = await fetchPairedExaminer();
-            console.log("Examiner:", examiner);
+            console.log("Examiner:", $state.snapshot(examiner));
         } catch (e) {
             alert("حدث خطأ أثناء تحميل بيانات الممتحن.");
             console.error(e);
@@ -43,7 +48,7 @@
         try {
             halqat = await retrieveAllHalqat();
             halqatOptions = halqat.map(h => ({ value: h.id, text: h.name }));
-            console.log("Halqat:", halqat);
+            console.log("Halqat:", $state.snapshot(halqat));
         } catch (e) {
             alert("حدث خطأ أثناء تحميل الحلقات.");
             console.error(e);

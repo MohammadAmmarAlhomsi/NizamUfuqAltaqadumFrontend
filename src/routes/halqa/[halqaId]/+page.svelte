@@ -187,7 +187,7 @@
                         <p class="white-text"><span class="color-box white"></span> بدون تحديد: {attendanceRecord.studentsAttendanceRecords.filter(s => !s.status).length}</p>
                     </div>
                     
-                    {#if !attendancesRecords[i].notes}
+                    {#if attendancesRecords[i].notes}
                         <p style="text-align: start; margin-top: 5px"><b>الملاحظات:</b></p>
                         <p style="text-align: start;">{attendancesRecords[i].notes}</p>
                     {/if}

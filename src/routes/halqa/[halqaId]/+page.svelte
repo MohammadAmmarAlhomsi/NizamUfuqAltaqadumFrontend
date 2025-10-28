@@ -190,6 +190,8 @@
                     {#if attendancesRecords[i].notes}
                         <p style="text-align: start; margin-top: 5px"><b>الملاحظات:</b></p>
                         <p style="text-align: start;">{attendancesRecords[i].notes}</p>
+                    {:else}
+                        <p>لا يوجد ملاحظات</p>
                     {/if}
                 </button>
             {/each}

@@ -1,26 +1,32 @@
 <script>
     import { onMount } from "svelte";
     import { fetchAccessiblePagesOverview } from "$lib/sdk/student";
-    import { cancelPageRecitationReward, registerPageRecitations, updateStudentAttendance } from "$lib/sdk/halqa";
+    import { 
+        cancelPageRecitationReward, 
+        registerPageRecitations, 
+        updateStudentAttendance 
+    } from "$lib/sdk/halqa";
     
     import DropdownField from "../DropdownField.svelte";
     import TextAreaField from "../TextAreaField.svelte";
     import Button from "../Button.svelte";
     import RecitationPageBox from "../RecitationPageBox.svelte";
-
-    import { deletePageRecitationRecordAsync, deletePageRecitationRewardCancellationRecordAsync } from "$lib/sdk/halqa";
+    import { 
+        deletePageRecitationRecordAsync, 
+        deletePageRecitationRewardCancellationRecordAsync 
+    } from "$lib/sdk/halqa";
 
     let { studentAttendanceRecord = $bindable(null), ...props } = $props();
 
     let accessableQuranPagesOverview = $state([]);
-    let highlightedPage = $state(null);
+    let highlightedPages = $state([]); // multiple selection array
 
     let showRecitationRegisterer = $state(false);
     let showRecitationDeleter = $state(false);
     let showPageRewardCanceller = $state(false);
     let showPageRewardCancellationDeleter = $state(false);
 
-    // Fetch data
+    // Load pages when attendance record available
     $effect(async () => {
         if (studentAttendanceRecord != null) {
             await loadQuranPages();
@@ -41,21 +47,32 @@
         }
     }
 
-    // ✅ Unified selection handler — supports selectPage(null)
+    // ✅ Multi-selection with single-selection override for recited pages
     function selectPage(page) {
-        // Unhighlight all
-        accessableQuranPagesOverview.forEach(p => (p.isHighlighted = false));
-
-        // Deselect if same page or null
-        if (page == null || highlightedPage === page) {
-            highlightedPage = null;
+        if (!page) {
+            // Deselect all
+            accessableQuranPagesOverview.forEach(p => (p.isHighlighted = false));
+            highlightedPages = [];
             resetButtons();
             return;
         }
 
-        // Highlight new one
-        page.isHighlighted = true;
-        highlightedPage = page;
+        // If page is recited or cancelled → disable all others and highlight only this one
+        if (page.isRecited || page.isRecitationCancelled) {
+            accessableQuranPagesOverview.forEach(p => (p.isHighlighted = false));
+            page.isHighlighted = true;
+            highlightedPages = [page];
+        } else {
+            // Toggle non-recited pages
+            if (page.isHighlighted) {
+                page.isHighlighted = false;
+                highlightedPages = highlightedPages.filter(p => p.id !== page.id);
+            } else {
+                page.isHighlighted = true;
+                highlightedPages = [...highlightedPages, page];
+            }
+        }
+
         updateButtonsVisibility();
     }
 
@@ -67,15 +84,19 @@
     }
 
     function updateButtonsVisibility() {
-        if (!highlightedPage) {
+        if (highlightedPages.length === 0) {
             resetButtons();
             return;
         }
 
-        showRecitationRegisterer = !highlightedPage.isRecited && !highlightedPage.isRecitationCancelled;
-        showRecitationDeleter = highlightedPage.isRecited || highlightedPage.isRecitationCancelled;
-        showPageRewardCanceller = highlightedPage.isRecited && !highlightedPage.isRecitationCancelled;
-        showPageRewardCancellationDeleter = highlightedPage.isRecitationCancelled;
+        const allNonRecited = highlightedPages.every(p => !p.isRecited && !p.isRecitationCancelled);
+        const singlePage = highlightedPages.length === 1;
+        const first = highlightedPages[0];
+
+        showRecitationRegisterer = allNonRecited;
+        showRecitationDeleter = singlePage && (first.isRecited || first.isRecitationCancelled);
+        showPageRewardCanceller = singlePage && first.isRecited && !first.isRecitationCancelled;
+        showPageRewardCancellationDeleter = singlePage && first.isRecitationCancelled;
     }
 
     async function handleSubmit() {
@@ -89,50 +110,63 @@
         }
     }
 
+    // ✅ Register all highlighted pages together
     async function registerRecitation() {
-        if (!highlightedPage) return;
+        if (highlightedPages.length === 0) return;
+
         try {
             await registerPageRecitations({
-                pagesIds: [highlightedPage.id],
+                pagesIds: highlightedPages.map(p => p.id),
                 studentAttendanceRecordId: studentAttendanceRecord.id
             });
+
             await loadQuranPages();
-            selectPage(null); // clear selection
+            selectPage(null);
         } catch (e) {
             alert("حدث خطأ أثناء تسجيل الحفظ.");
+            console.error(e);
         }
     }
 
     async function deleteRecitation() {
-        if (!highlightedPage) return;
+        if (highlightedPages.length !== 1) return;
+        const page = highlightedPages[0];
+
         try {
-            await deletePageRecitationRecordAsync(highlightedPage.recitationPageRecordId);
+            await deletePageRecitationRecordAsync(page.recitationPageRecordId);
             await loadQuranPages();
             selectPage(null);
         } catch (e) {
             alert("حدث خطأ أثناء حذف التسميع.");
+            console.error(e);
         }
     }
 
     async function cancelPageReward() {
-        if (!highlightedPage) return;
+        if (highlightedPages.length !== 1) return;
+        const page = highlightedPages[0];
+
         try {
-            await cancelPageRecitationReward(highlightedPage.recitationPageRecordId);
+            await cancelPageRecitationReward(page.recitationPageRecordId);
             await loadQuranPages();
             selectPage(null);
         } catch (e) {
             alert("حدث خطأ أثناء إلغاء نقاط الصفحة.");
+            console.error(e);
         }
     }
 
     async function deletePageCancellation() {
-        if (!highlightedPage) return;
+        if (highlightedPages.length !== 1) return;
+        const page = highlightedPages[0];
+
         try {
-            await deletePageRecitationRewardCancellationRecordAsync(highlightedPage.recitationPageRecordId);
+            await deletePageRecitationRewardCancellationRecordAsync(page.recitationPageRecordId);
             await loadQuranPages();
             selectPage(null);
         } catch (e) {
             alert("حدث خطأ أثناء إلغاء مبطل النقاط.");
+            console.error(e);
         }
     }
 </script>
@@ -168,13 +202,14 @@
                 {#if showPageRewardCancellationDeleter}
                     <Button onclick={deletePageCancellation}>إلغاء مبطل النقاط</Button>
                 {/if}
-                {#if highlightedPage}
+                {#if highlightedPages.length > 0}
                     <Button onclick={() => selectPage(null)}>إلغاء التحديد</Button>
                 {/if}
             </div>
 
             <p><b>الحفظ:</b></p>
             <div style="height: 10px;"></div>
+
             <div class="pages-container">
                 {#each accessableQuranPagesOverview as page, i}
                     <RecitationPageBox

@@ -15,6 +15,7 @@
 
   const attendanceOptions = [
       { value: 'Attended', text: 'حاضر', color: 'rgb(70, 190, 90)' },
+      { value: 'AttendedLate', text: 'حاضر متأخر', color: 'rgb(35, 95, 45)' },
       { value: 'AbscentWithExecuse', text: 'غياب بعذر', color: 'rgb(255, 200, 80)' },
       { value: 'AbscentWithoutExecuse', text: 'غياب بدون عذر', color: 'rgb(255, 100, 100)' }
   ];
@@ -31,6 +32,7 @@
     class:attended={studentAttendanceRecord.status == 'Attended'}
     class:absence-with-excuse={studentAttendanceRecord.status == 'AbscentWithExecuse'}
     class:absence-without-excuse={studentAttendanceRecord.status == 'AbscentWithoutExecuse'}
+    class:attended-late={studentAttendanceRecord.status == 'AttendedLate'}
 >
     <p class="student-name">{studentAttendanceRecord.student.fullName}</p>
 
@@ -43,12 +45,18 @@
     </div>
 
     <!-- Open attendance options -->
-    <div class="attendance-options" onclick={e => e.stopPropagation()}>
+    <div 
+            class="attendance-options" 
+            onclick={e => e.stopPropagation()}
+            onkeydown={() => {}}
+            tabindex = '0'
+            role='button'>
         {#each attendanceOptions as opt}
             <div 
                 role="button"
                 tabindex="0"
                 class="attendance-button"
+                onkeydown={() => { }}
                 class:selected={studentAttendanceRecord.status === opt.value}
                 style="--accent-color: {opt.color};"
                 onclick={(e) => { e.stopPropagation(); selectStatus(opt.value); } }>
@@ -136,6 +144,10 @@
       background: rgb(230, 255, 232);
   }
 
+  .attended-late {
+    background: rgb(201, 231, 207);
+  }
+  
   .absence-with-excuse {
       background: rgb(255, 247, 220);
   }

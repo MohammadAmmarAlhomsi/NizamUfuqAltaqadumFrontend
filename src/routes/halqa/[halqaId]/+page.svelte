@@ -181,12 +181,19 @@
                     <div style="height: 10px;"></div>
                     <div class="detailed-attendance-record">
                         <p class="green-text"><span class="color-box green"></span> الحضور: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'Attended').length}</p>
+                        <p class="green-dark-text"><span class="color-box green-dark"></span> الحضور المتأخر: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'AttendedLate').length}</p>
                         <p class="yellow-text"><span class="color-box yellow"></span>  الغياب بعذر: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'AbscentWithExecuse').length}</p>
                         <p class="red-text"><span class="color-box red"></span> الغياب بدون بعذر: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'AbscentWithoutExecuse').length}</p>
                         <p class="white-text"><span class="color-box white"></span> بدون تحديد: {attendanceRecord.studentsAttendanceRecords.filter(s => !s.status).length}</p>
                     </div>
+                    
+                    <p style="text-align: start; margin-top: 5px"><b>الملاحظات:</b></p>
+                    <p style="text-align: start;">{attendancesRecords[i].notes}</p>
                 </button>
             {/each}
+
+
+            
         </div>
     {:else if tabIndex == 2}
         <Button width='150px' onclick={handleAddGroupActivity}>إضافة نشاط جماعي</Button>
@@ -263,6 +270,10 @@
         /* box-shadow: 0px 0px 2px 0px #27ae60; */
     }
 
+    .color-box.green-dark {
+        background-color: rgb(183, 231, 192);
+    }
+
     .color-box.white {
         background: white;
         box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
@@ -271,6 +282,7 @@
     .red-text {  color: #e74c3c; }
     .yellow-text { color: #f1c40f; }
     .green-text { color: #27ae60; }
+    .green-dark-text { color: rgb(162, 224, 174); }
 
     .detailed-attendance-record {
         text-align: start;
@@ -315,7 +327,7 @@
     }
 
     .container {
-        width: 1400px;
+        width: 100%;
     }
 
     .header-container {

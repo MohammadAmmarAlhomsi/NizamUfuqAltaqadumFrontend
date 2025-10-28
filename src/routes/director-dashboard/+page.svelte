@@ -78,7 +78,7 @@
 
 <style>
     .container {
-        width: 1500px;
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;

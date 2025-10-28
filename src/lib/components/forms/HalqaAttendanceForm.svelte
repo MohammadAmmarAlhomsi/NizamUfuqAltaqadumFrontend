@@ -8,10 +8,10 @@
     import { page } from "$app/state";
     import { fetchHalqaById, updateHalqaAsync, updateStudentAttendance } from "$lib/sdk/halqa";
     import { onMount } from "svelte";
+    import { updateHalqaAttendance } from "$lib/sdk/halqa-attendance-record";
     
     import dayjs from 'dayjs';
     import 'dayjs/locale/ar';
-  import { updateHalqaAttendance } from "$lib/sdk/halqa-attendance-record";
 
     dayjs.locale('ar');
 

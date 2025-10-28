@@ -35,8 +35,10 @@
                         {#each columns as col}
                             <td>{item[col.prop]}</td>
                         {/each}
-                        <td class="actions">
-                            <Button onclick={() => onEdit(item)}>تعديل</Button>
+                        <td>
+                            <div class="actions">
+                                <Button onclick={() => onEdit(item)}>تعديل</Button>
+                            </div>
                             <!-- <Button onclick={() => onDelete(inst)} style="background:#f66">حذف</Button> -->
                         </td>
                     </tr>
@@ -89,6 +91,8 @@
     .actions {
         display: flex;
         gap: 8px;
+        align-items: center; /* vertically center buttons */
+        justify-content: center;
     }
 
     .no-data {

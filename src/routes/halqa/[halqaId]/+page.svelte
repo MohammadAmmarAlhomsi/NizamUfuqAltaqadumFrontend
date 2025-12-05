@@ -3,7 +3,7 @@
     import StudentsTable from '$lib/components/tables/StudentsTable.svelte';
     import Button from '$lib/components/Button.svelte';
     import TabsContainer from '$lib/components/TabsContainer.svelte';
-    import StudentAttendanceForm from '$lib/components/forms/StudentAttendanceForm.svelte';
+    import StudentAttendanceForm from '$lib/components/forms/student-attendance-form/StudentAttendanceFormRenderer.svelte';
     import HalqaAttendanceForm from '$lib/components/forms/HalqaAttendanceForm.svelte';
     import BaseHalqaRecordInitiatorForm from '$lib/components/forms/BaseHalqaRecordInitiatorForm.svelte';
 
@@ -13,13 +13,17 @@
     import { onMount } from 'svelte';
     import { verifyCreateInstructorPermission, createInstructor, getInstructorById, verifyUpdateInstructorPermission, updateInstructorAsync, fetchPairedInstructor, fetchResponsibleHalqat } from '$lib/sdk/instructor';
     import { fetchAllHalqaAttendances, fetchHalqaById, fetchHalqaGroupActivities, registerHalqaAttendance } from '$lib/sdk/halqa';
+    import { FollowUpSection } from '$lib/components/forms/follow-up-section/follow-up-section.svelte';
 
     import dayjs from "dayjs";
     import IndivisualActivityForm from '$lib/components/forms/IndivisualActivityForm.svelte';
     import GroupActivityForm from '$lib/components/forms/GroupActivityForm.svelte';
     import GroupActivityRecordItem from '$lib/components/GroupActivityRecordItem.svelte';
+    import StudentsSection from './StudentsSection.svelte';
     
     import "dayjs/locale/ar";
+    import FollowUpSectionRenderer from '$lib/components/forms/follow-up-section/follow-up-section-renderer.svelte';
+
     dayjs.locale("ar");
 
     let instructor = $state(null);
@@ -29,6 +33,8 @@
     let attendancesRecords = $state([]);
     let groupsActivities = $state([]);
 
+    let followUpSection = $state(new FollowUpSection(halqaId));
+
     let showBaseHalqaInitiator = $state(false);
     let showIndivsualActivityForm = $state(false);
     let showGroupActivityForm = $state(false);
@@ -36,9 +42,11 @@
     let initialTabIdx = page.url.searchParams.get('tabIdx')
     let hasInitialized = false;
 
-    onMount(() => {
+    onMount(async () => {
         const param = new URL(window.location.href).searchParams.get('tabIdx');
         tabIndex = param !== null ? Number(param) : 0;
+        
+        await followUpSection.onMount();
     });
 
     $effect(() => {
@@ -161,44 +169,9 @@
     <div style="height: 110px;"></div>
 
     {#if tabIndex == 0}
-        <h1 style="margin-bottom: 20px;">طلاب الحلقة</h1>
-        <div class="container">
-            <StudentsTable loadStudents={retrieveHalqaStudents} />
-        </div> 
+        <StudentsSection bind:halqa={halqa}/>
     {:else if tabIndex == 1}
-        <Button onclick={handleHalqaAttendanceRegistration}>تسجيل يوم جديد</Button>
-
-        <div style="height: 30px;"></div>
-
-        <div class="attendance-days-container">
-            {#each attendancesRecords as attendanceRecord, i}
-                <button 
-                    onclick={() => handleClickAttendanceRecord(attendanceRecord)} 
-                    class:last-day={i == 0}
-                    class="attendance-day-button"
-                    >
-                    <p>حضور {dayjs(attendanceRecord.attendanceDay.date).format("dddd DD/MM/YYYY")}</p>
-                    <div style="height: 10px;"></div>
-                    <div class="detailed-attendance-record">
-                        <p class="green-text"><span class="color-box green"></span> الحضور: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'Attended').length}</p>
-                        <p class="green-dark-text"><span class="color-box green-dark"></span> الحضور المتأخر: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'AttendedLate').length}</p>
-                        <p class="yellow-text"><span class="color-box yellow"></span>  الغياب بعذر: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'AbscentWithExecuse').length}</p>
-                        <p class="red-text"><span class="color-box red"></span> الغياب بدون بعذر: {attendanceRecord.studentsAttendanceRecords.filter(s => s.status == 'AbscentWithoutExecuse').length}</p>
-                        <p class="white-text"><span class="color-box white"></span> بدون تحديد: {attendanceRecord.studentsAttendanceRecords.filter(s => !s.status).length}</p>
-                    </div>
-                    
-                    <p style="text-align: start; margin-top: 5px"><b>الملاحظات:</b></p>
-                    {#if attendancesRecords[i].notes}
-                        <p style="text-align: start;">{attendancesRecords[i].notes}</p>
-                    {:else}
-                        <p>-----------------</p>
-                    {/if}
-                </button>
-            {/each}
-
-
-            
-        </div>
+        <FollowUpSectionRenderer bind:source={followUpSection}/>
     {:else if tabIndex == 2}
         <Button width='150px' onclick={handleAddGroupActivity}>إضافة نشاط جماعي</Button>
 

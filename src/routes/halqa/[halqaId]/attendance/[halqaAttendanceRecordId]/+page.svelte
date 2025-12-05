@@ -2,6 +2,8 @@
     import { page } from "$app/state";
     import { onMount } from "svelte";
     import { fetchHalqaAttendanceRecord, fetchHalqaById } from "$lib/sdk/halqa";
+    import { Halqa } from "$lib/sdk/models/halqa.svelte";
+    import { HalqaAttendanceRecord } from "$lib/sdk/models/halqa-attendance-record.svelte";
     
     import Header from "$lib/components/layout/Header.svelte";
     import HalqaAttendanceForm from "$lib/components/forms/HalqaAttendanceForm.svelte";
@@ -14,25 +16,19 @@
     let halqaId = $state(page.params.halqaId);
     let halqaAttendanceRecordId = $state(page.params.halqaAttendanceRecordId);
 
+    /** @type {Halqa} */
     let halqa = $state(null);
+
+    /** @type {HalqaAttendanceRecord} */
     let attendanceRecord = $state(null);
 
     onMount(async () => {
-        try {
-            halqa = await fetchHalqaById(halqaId);
-            console.log($state.snapshot(halqa));
-        } catch (e) {
-            alert('حدث خطأ أثناء تحصيل الحلقة.');
-            console.error(e);
-        }
+        halqa = await Halqa.getById(halqaId);
+        attendanceRecord = await HalqaAttendanceRecord.getById(halqaAttendanceRecordId);
 
-        try {
-            attendanceRecord = await fetchHalqaAttendanceRecord(halqaId, halqaAttendanceRecordId);
-            console.log($state.snapshot(attendanceRecord));
-            console.log(attendanceRecord.attendanceDay.date)
-        } catch (e) {
-            alert('حدث خطأ أثناء تحصيل ملف تسحيل الحضور.');
-            console.error(e);
+        if (attendanceRecord == null || halqa == null) {
+            alert('حدث خطأ أثناء تحصيل بيانات الحلقة أو ملف تسجيل الحضور.');
+            return;
         }
     });
 </script>
@@ -50,7 +46,7 @@
     <div class="container">
         <HalqaAttendanceForm 
             bind:halqa={halqa}
-            bind:halqaAttendance={attendanceRecord}
+            bind:halqaAttendanceId={halqaAttendanceRecordId}
             />
     </div>
 </main>

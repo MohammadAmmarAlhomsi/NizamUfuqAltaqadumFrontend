@@ -9,103 +9,109 @@
     import { fetchHalqaById, updateHalqaAsync, updateStudentAttendance } from "$lib/sdk/halqa";
     import { onMount } from "svelte";
     import { updateHalqaAttendance } from "$lib/sdk/halqa-attendance-record";
+    import { HalqaAttendanceRecord } from "$lib/sdk/models/halqa-attendance-record.svelte";
+    import { Halqa } from "$lib/sdk/models/halqa.svelte";
+    import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
     
     import dayjs from 'dayjs';
     import 'dayjs/locale/ar';
+    import { Student } from "$lib/sdk/models/student.svelte";
 
     dayjs.locale('ar');
 
+    /**
+     * @type {{halqaAttendanceId: string, halqa: Halqa, date:str}}
+     */
     let {
-        date = new Date(), 
         halqa = $bindable(null),
-        halqaAttendance = $bindable(null),
+        halqaAttendanceId = $bindable(''),
         ...props 
     } = $props();
 
+    /** @type {Array<Student>}*/
     let students = $state([]);
+
+    /** @type {Array<StudentAttendanceRecord>}*/
+    let studentAttendances = $state([]);
+
+    /** @type {HalqaAttendanceRecord}*/
+    let halqaAttendance = $state(null);
+
     let attendanceValue = $state('');
-    let notesSelectedStudentAttendanceRecordIdx = $state(-1);
 
-    let showNotesMenu = $state(false);
+    /** @type {StudentAttendanceRecord} */
+    let selectedNotesRecord = $state(null);
 
-    $effect(() => {
+    $effect(async () => {
         if (halqa != null) {
-            students = halqa?.students;
-
-            console.log('halqa:');
-            console.log($state.snapshot(halqa));
-        }
-
-
-    })
-
-    $effect(() => {
-        if (halqaAttendance != null) {
-            console.log('halqa attendance record:');
-            console.log($state.snapshot(halqaAttendance));
+            students = await Student.loadHalqaStudents(halqa.id);
         }
     });
 
-    onMount(() => {
-        if (halqa != null) {
-            students = halqa.students;
-        }    
-    })
+    $effect(async () => {
+        if (halqa != null && halqaAttendanceId != '') {
+            halqaAttendance = await HalqaAttendanceRecord.getById(halqaAttendanceId);
+        }
+    });
 
-    async function handleSaveStudentAttendanceNotes(notes) {
-        halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx].notes = notes;
-        
-        let studentAttendanceRecord = halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx];
-        await saveStudentRecord(studentAttendanceRecord);
-
-        notesSelectedStudentAttendanceRecordIdx = -1;
-        showNotesMenu = false;
-    }
-
-    async function saveStudentRecord(studentAttendanceRecord) {
-        try {
-            let { id, ...dto } = studentAttendanceRecord;
-            await updateStudentAttendance(studentAttendanceRecord.id, dto);
-            console.log('saved student attendance record:');
-        } catch (e) {
-            alert('حدث خطأ أثناء حفظ حالة حضور الطالب.');
-            console.error(e);
+    $effect(async () => { await loadStudentAttendances(); });
+    
+    async function loadStudentAttendances() {
+        if (halqaAttendance != null) {
+            studentAttendances = await StudentAttendanceRecord.getHalqaAttendanceStudentAttendanceRecords(halqaAttendance.id);
         }
     }
 
-    function handleCancelNotesTyping() {
-        notesSelectedStudentAttendanceRecordIdx = -1;
-        showNotesMenu = false;
+    async function handleSaveStudentAttendanceNotes(notes) {
+        if (selectedNotesRecord == null) return;
+        
+        selectedNotesRecord.notes = notes;
+
+        console.log(selectedNotesRecord);
+
+        let response = await selectedNotesRecord.save();
+        console.log(response);
+
+        await loadStudentAttendances();
+
+        selectedNotesRecord = null;
     }
 
-    function handleClickNotes(studentAttendanceRecordIdx) {
-        notesSelectedStudentAttendanceRecordIdx = studentAttendanceRecordIdx;
-        showNotesMenu = true
+    /**
+     * @param {StudentAttendanceRecord} studentAttendanceRecord
+     */
+    async function saveStudentRecord(studentAttendanceRecord) {
+        await studentAttendanceRecord.save();
+    }
+
+    function handleCancelNotesTyping() {
+        selectedNotesRecord = null;
     }
 
     function handleClick(studentAttendanceRecord) {
         window.location.href = `/halqa/${halqa.id}/attendance/${halqaAttendance.id}/student-attendance/${studentAttendanceRecord.id}`;
     }
 
+    /**
+     * @param {StudentAttendanceRecord} studentAttendanceRecord
+     */
     async function handleStudentAttendanceChange(studentAttendanceRecord, newValue) {
-        await saveStudentRecord(studentAttendanceRecord);
-        if (studentAttendanceRecord.status == 'Attended') {
-            // window.location.href = `/halqa/${halqa.id}/attendance/${halqaAttendance.id}/student-attendance/${studentAttendanceRecord.id}`;
-        } else if (studentAttendanceRecord.status == 'AbscentWithExecuse') {
-            notesSelectedStudentAttendanceRecordIdx = halqaAttendance.studentsAttendanceRecords.findIndex(record => record.id == studentAttendanceRecord.id);
-            showNotesMenu = true;
+        if (studentAttendanceRecord.status == 'AbscentWithExecuse') {
+            selectedNotesRecord = studentAttendances.find(record => record.id == studentAttendanceRecord.id);
+        } else {
+            console.log(studentAttendanceRecord)
+            await studentAttendanceRecord.save();
+            // await loadStudentAttendances();
         }
     }
 
     async function handleSubmit() {
-        try {
-            let dto = { attendanceDayId: halqaAttendance.attendanceDayId, notes: halqaAttendance.notes };
-            await updateHalqaAttendance(halqaAttendance.id, dto);
-            window.location.href = `/halqa/${halqa.id}?tabIdx=1`;
-        } catch (e) { 
-            alert('حدث خطأ أثناء تنزيل الحلقة');
-            console.error(e);
+        let response = await halqaAttendance.save();
+        if (response.succeed == false) {
+            alert('حدث خطأ أثناء حفظ حضور الحلقة.');
+            return;
         }
+        window.location.href = `/halqa/${halqa.id}?tabIdx=1`;
     }
 </script>
 
@@ -113,15 +119,15 @@
     <div style="height: 20px;"></div>
 
     <div class="students-container">
-        {#if halqa == null || halqa.students.length == 0}
+        {#if students.length == 0}
             <p>لا يوجد طلاب</p>
         {:else if halqaAttendance != null}
-            {#each halqaAttendance.studentsAttendanceRecords as attendanceRecord, i}
+            {#each studentAttendances as attendanceRecord, i}
                 <StudentAttendanceCell 
                     onclick={handleClick} 
-                    onchange={async () => await handleStudentAttendanceChange(halqaAttendance.studentsAttendanceRecords[i], attendanceValue)}
-                    onclickNotesIcon= { () => handleClickNotes(i) }
-                    bind:studentAttendanceRecord={halqaAttendance.studentsAttendanceRecords[i]}/>
+                    onchange={async () => await handleStudentAttendanceChange(studentAttendances[i], attendanceValue)}
+                    onclickNotesIcon= { () => selectedNotesRecord = attendanceRecord }
+                    bind:studentAttendanceRecord={studentAttendances[i]}/>
             {/each}
         {/if}
     </div>
@@ -142,10 +148,10 @@
     <div style="height: 50px;"></div>
 </div>
 
-{#if showNotesMenu}
+{#if selectedNotesRecord != null}
     <NotesForm
-        startingNotes={halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx]?.notes} 
-        student={halqaAttendance.studentsAttendanceRecords[notesSelectedStudentAttendanceRecordIdx]?.student}
+        startingNotes={selectedNotesRecord.notes} 
+        student={selectedNotesRecord.student}
         onclickCancel = {handleCancelNotesTyping}
         onclickSave = {handleSaveStudentAttendanceNotes}
     />
@@ -157,13 +163,12 @@
         width: 80%;
     }
 
-    .students-container {
+   .students-container {
         margin-top: 150px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 25px;
         text-align: center;
-
         justify-content: center;
     }
 

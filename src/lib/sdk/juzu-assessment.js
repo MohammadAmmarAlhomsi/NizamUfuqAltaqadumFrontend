@@ -11,7 +11,7 @@ export async function fetchJuzuAssessment(assessmentId) {
 
   try {
     const { token } = loadAccessToken();
-    const response = await fetch(`${host}/api/JuzuAssessment/${assessmentId}`, {
+    const response = await fetch(`${host}/api/juzu-assessment/${assessmentId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -37,7 +37,7 @@ export async function fetchStudentAssessments(studentId) {
 
   try {
     const { token } = loadAccessToken();
-    const response = await fetch(`${host}/api/JuzuAssessment/student/${studentId}/all`, {
+    const response = await fetch(`${host}/api/juzu-assessment/student/${studentId}/all`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -69,7 +69,7 @@ export async function registerJuzuAssessment(dto) {
 
   try {
     const { token } = loadAccessToken();
-    const response = await fetch(`${host}/api/JuzuAssessment/register`, {
+    const response = await fetch(`${host}/api/juzu-assessment/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -106,7 +106,7 @@ export async function deleteJuzuAssessment(assessmentId) {
 
   try {
     const { token } = loadAccessToken();
-    const response = await fetch(`${host}/api/JuzuAssessment/${assessmentId}`, {
+    const response = await fetch(`${host}/api/juzu-assessment/${assessmentId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

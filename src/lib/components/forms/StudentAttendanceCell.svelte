@@ -1,13 +1,33 @@
 <script>
   import { stopPropagation } from "svelte/legacy";
   import Button from "../Button.svelte";
-
+  import { onMount } from "svelte";
+  import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
+  import { PageRecitationRecord } from "$lib/sdk/models/page-recitation-record.svelte";
+  import { Student } from "$lib/sdk/models/student.svelte";
+    
+    /** @type {{
+     * studentAttendanceRecord: StudentAttendanceRecord,
+    }}*/
   let { 
       studentAttendanceRecord = $bindable(null),
       onchange = (data) => {},
       onclick = (record) => {},
       onclickNotesIcon = () => {}
   , ...props } = $props();
+
+
+    /** @type {PageRecitationRecord}*/
+    let lastRecitationRecord = $state(null);
+
+    /** @type {Student}*/
+    let student = $state(null);
+
+    $effect(async () => {
+        if (studentAttendanceRecord == null) return;
+        let student = await Student.getById(studentAttendanceRecord.studentId);
+        lastRecitationRecord = await student.getLastRecitationRecord();
+    })
 
   function handleClickNotesIcon() {
       onclickNotesIcon();
@@ -26,7 +46,10 @@
   }
 </script>
 
-<button 
+<div 
+    role="button"
+    tabindex="0"
+    onkeydown={(k) => {  }}
     onclick={() => onclick(studentAttendanceRecord)}
     class="cell-item"
     class:attended={studentAttendanceRecord.status == 'Attended'}
@@ -64,14 +87,27 @@
             </div>
         {/each}
     </div>
-</button>
+
+    <div style="height: 10px;"></div>
+    
+    {#if lastRecitationRecord != null}
+        <div class="footer">
+            <p>الصفحة الأخيرة: {lastRecitationRecord.page.number}</p>
+        </div>
+    {/if}
+</div>
 
 <style>
+    .footer {
+        text-align: start;
+        width: 100%;
+    }
+
   .cell-item {
       background: white;
       color: black;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      padding: 18px;
+      padding: 20px;
       border-radius: 16px;
       cursor: pointer;
       outline: none;
@@ -79,6 +115,10 @@
       position: relative;
       text-align: center;
       transition: box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-self: center;
   }
 
   .cell-item:hover {
@@ -109,15 +149,15 @@
   }
 
   .attendance-options {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(2, 100px);
       gap: 10px;
       margin-top: 10px;
+      font-size: 13px;
   }
 
   .attendance-button {
-      padding: 8px 14px;
+      padding: 8px 8px;
       border-radius: 999px;
       background: rgba(0, 0, 0, 0.05);
       border: 1px solid transparent;

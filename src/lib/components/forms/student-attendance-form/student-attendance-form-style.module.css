@@ -1,0 +1,26 @@
+.pages-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.container {
+    direction: rtl;
+    position: relative;
+}
+
+.selection-action-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    gap: 20px;
+}
+
+.save-button-container {
+    position: absolute;
+    left: 0px;
+    box-sizing: border-box;
+}

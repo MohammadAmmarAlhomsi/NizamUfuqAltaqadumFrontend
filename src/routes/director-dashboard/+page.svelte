@@ -14,6 +14,7 @@
     import { verifyCreateInstructorPermission } from '$lib/sdk/instructor';
     
     let selectedTabIdx = $state(0);
+    
     const tabs = $state([ 
         { label: 'الطلاب' }, 
         { label: 'الأساتذة' },
@@ -31,15 +32,6 @@
 
     async function handleCreateNew() {
         await tableComponentRef?.requestCreateNew();
-        // if (selectedTabIdx === 1) {
-        //     try {
-        //         await verifyCreateInstructorPermission();
-        //         window.location.href = `/create-instructor`;
-        //     } catch (error) {
-        //         alert("ليس لديك إذن لإنشاء أستاذ جديد.");
-        //         console.error("Permission error:", error);
-        //     }
-        // }
     }
 
     let tableComponentRef = $state(null);
@@ -85,10 +77,6 @@
         justify-content: center;
         
         padding-top: 130px;
-    }
-
-    h1 {
-        margin-bottom: 10px;
     }
 
     .menues-header-container {

@@ -13,7 +13,7 @@ export async function registerJuzuAccess(juzuNumber, studentId) {
   try {
     const { token } = loadAccessToken();
 
-    const response = await fetch(`${host}/api/JuzuAccess/register`, {
+    const response = await fetch(`${host}/api/juzu-access/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export async function fetchAllJuzuAccesses(studentId) {
   try {
     const { token } = loadAccessToken();
 
-    const response = await fetch(`${host}/api/JuzuAccess/student/${studentId}/all`, {
+    const response = await fetch(`${host}/api/juzu-access/student/${studentId}/all`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`
@@ -77,7 +77,7 @@ export async function deleteJuzuAccess(recordId) {
   try {
     const { token } = loadAccessToken();
 
-    const response = await fetch(`${host}/api/JuzuAccess/${recordId}`, {
+    const response = await fetch(`${host}/api/juzu-access/${recordId}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`

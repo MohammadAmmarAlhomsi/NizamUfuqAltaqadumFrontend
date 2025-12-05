@@ -37,20 +37,16 @@
         window.location.href = '/student/create'
     }
 
-    onMount(async () => {
-        loadStudents = loadStudents ?? retrieveAllStudents;
-
-        try {
-            students = await loadStudents();
-            students = students.map(s => ({
-                ...s,// Format date as YYYY-MM-DD
-            }));
-            console.log($state.snapshot(students));
-        } catch (e) {
-            console.log('unable to load students');
-            console.error(e);
+    $effect(async () => {
+        if (loadStudents != null) {
+            try {
+                students = await loadStudents();
+            } catch (e) {
+                console.log('unable to load students');
+                console.error(e);
+            }
+            console.log("Students table mounted");
         }
-        console.log("Students table mounted");
     });
 </script>
 

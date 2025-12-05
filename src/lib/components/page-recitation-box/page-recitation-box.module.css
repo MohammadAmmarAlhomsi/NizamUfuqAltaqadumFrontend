@@ -1,0 +1,46 @@
+button {
+        position: relative;
+        transition: all ease-in-out 0.3s;
+
+    }
+
+    button:hover {
+        transform: scale(1.1);
+    }
+
+    .order-label {
+        position: absolute;
+        bottom: 0px;
+        left: 50%;
+        transform: translate(-50%, 0px);
+        font-size: 10px;
+    }
+
+    .recitation-page {
+        background: white;
+        padding: 12px;
+        box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .is-selected {
+        background: yellow;
+        transform: scale(1.1);
+        border-radius: 500px;
+    }
+
+    .recited-and-not-rewarded-page {
+        background: rgb(255, 161, 161);
+    }
+
+    .recitd-and-rewarded-page {
+        background: rgb(190, 255, 190);
+    }
+
+    .is-recited-today {
+        transform: scale(1.0);
+        background: rgb(121, 255, 121);
+    }

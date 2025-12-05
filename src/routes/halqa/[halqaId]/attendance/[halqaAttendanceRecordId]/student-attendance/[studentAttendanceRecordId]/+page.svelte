@@ -2,10 +2,13 @@
     import { page } from "$app/state";
     import { onMount } from "svelte";
     import { fetchHalqaAttendanceRecord, fetchHalqaById, fetchStudentAttendanceRecord } from "$lib/sdk/halqa";
-    
+    import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
+    import { HalqaAttendanceRecord } from "$lib/sdk/models/halqa-attendance-record.svelte";
+    import { Halqa } from "$lib/sdk/models/halqa.svelte";
+
     import Header from "$lib/components/layout/Header.svelte";
     import HalqaAttendanceForm from "$lib/components/forms/HalqaAttendanceForm.svelte";
-    import StudentAttendanceForm from "$lib/components/forms/StudentAttendanceForm.svelte";
+    import StudentAttendanceFormRenderer from "$lib/components/forms/student-attendance-form/StudentAttendanceFormRenderer.svelte";
     import Button from "$lib/components/Button.svelte";
     import PageCancellationWindow from "$lib/components/PageCancellationWindow.svelte";
 
@@ -14,48 +17,19 @@
 
     dayjs.locale("ar");
 
-    let halqaId = $state(page.params.halqaId);
-    let halqaAttendanceRecordId = $state(page.params.halqaAttendanceRecordId);
-    let studentAttendanceRecordId = $state(page.params.studentAttendanceRecordId);
-
+    /** @type {Halqa} */
     let halqa = $state(null);
+
+    /** @type {HalqaAttendanceRecord} */
     let halqaAttendanceRecord = $state(null);
+
+    /** @type {StudentAttendanceRecord}*/
     let studentAttendanceRecord = $state(null);
 
-    function handleSubmitClick() {
-
-    }
-
     onMount(async () => {
-        console.log($state.snapshot(halqaAttendanceRecord));
-
-        try {
-            halqa = await fetchHalqaById(halqaId);
-            console.log('halqa');
-            console.log($state.snapshot(halqa));
-        } catch (e) {
-            alert('حدث خطأ أثناء تحصيل الحلقة.');
-            console.error(e);
-        }
-
-        try {
-            halqaAttendanceRecord = await fetchHalqaAttendanceRecord(halqaId, halqaAttendanceRecordId);
-            console.log('halqa attendance record:');
-            console.log($state.snapshot(halqaAttendanceRecord));
-            console.log(halqaAttendanceRecord.attendanceDay.date)
-        } catch (e) {
-            alert('حدث خطأ أثناء تحصيل ملف تسحيل الحضور.');
-            console.error(e);
-        }
-
-        try {
-            studentAttendanceRecord = await fetchStudentAttendanceRecord(halqaId, halqaAttendanceRecordId, studentAttendanceRecordId);
-            console.log('student attendance record:');
-            console.log($state.snapshot(studentAttendanceRecord));
-        } catch (e) {
-            alert('حدث خطأأثناء تحصيل ملف حضور الطالب.')
-            console.error(e);
-        }
+        halqa = await Halqa.getById(page.params.halqaId);
+        halqaAttendanceRecord = await HalqaAttendanceRecord.getById(page.params.halqaAttendanceRecordId);
+        studentAttendanceRecord = await StudentAttendanceRecord.getById(page.params.studentAttendanceRecordId);
     });
 </script>
 
@@ -72,7 +46,7 @@
 
     <div class="container">
         <div style="height: 100px;"></div>
-        <StudentAttendanceForm bind:studentAttendanceRecord={studentAttendanceRecord}/>
+        <StudentAttendanceFormRenderer bind:studentAttendanceRecord={studentAttendanceRecord}/>
     </div>
 </main>
 

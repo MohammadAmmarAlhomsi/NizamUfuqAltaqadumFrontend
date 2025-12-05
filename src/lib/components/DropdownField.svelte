@@ -1,4 +1,11 @@
 <script>
+    /** @typedef {{ text: str, value: object }} Option */
+
+    /**
+     * @type {{
+     *      options: Array<Option>
+     * }}
+     */
     let { 
         label = 'LABEL', 
         value = $bindable(), 

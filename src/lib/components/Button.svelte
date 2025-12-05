@@ -18,6 +18,7 @@
         outline: none;
         border: none;
         padding: 10px 15px;
+        box-sizing: border-box;
     }
 
     .filled {

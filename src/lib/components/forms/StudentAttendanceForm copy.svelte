@@ -6,30 +6,57 @@
         registerPageRecitations, 
         updateStudentAttendance 
     } from "$lib/sdk/halqa";
+    import { QuranPage } from "$lib/sdk/models/quran-page.svelte";
     
     import DropdownField from "../DropdownField.svelte";
     import TextAreaField from "../TextAreaField.svelte";
     import Button from "../Button.svelte";
-    import RecitationPageBox from "../RecitationPageBox.svelte";
+    import RecitationPageBox from "../page-recitation-box/PageRecitationBoxRenderer.svelte";
     import { 
         deletePageRecitationRecordAsync, 
         deletePageRecitationRewardCancellationRecordAsync 
     } from "$lib/sdk/halqa";
 
+    import { Student } from "$lib/sdk/models/student.svelte";
+    import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
+    import { PageRecitationRecord } from "$lib/sdk/models/page-recitation-record.svelte";
+    import { PageRecitationRewardCancellationRecord as RewardCancellationRecord } from "$lib/sdk/models/page-recitation-reward-cancellation-record.svelte";
+
+    /** @type {{studentAttendanceRecord: StudentAttendanceRecord}} */
     let { studentAttendanceRecord = $bindable(null), ...props } = $props();
 
     let accessableQuranPagesOverview = $state([]);
-    let highlightedPages = $state([]); // multiple selection array
+    let highlightedPages = $state([]); 
 
-    let showRecitationRegisterer = $state(false);
-    let showRecitationDeleter = $state(false);
-    let showPageRewardCanceller = $state(false);
-    let showPageRewardCancellationDeleter = $state(false);
+    /** @type {Student} */
+    let student = $state(null);
 
-    // Load pages when attendance record available
+    /** @type {Array<QuranPage>} */ let accessibleQuranPages = $state([]);
+    /** @type {Array<PageRecitationRecord>} */ let recitedPagesRecords = $state([]);
+    /** @type {Array<RewardCancellationRecord>} */ let pagesRewardCancellationRecords = $state([]);
+
+    // -----------------------
+
+    /** @type {Array<QuranPage>} */ 
+    let selectedQuranPages = $state([]); 
+
+    let showRecitationRecords = $derived(
+        studentAttendanceRecord?.status == 'Attended' || 
+        studentAttendanceRecord?.status == 'AttendedLate'
+    );
+
+    // -----------------------
+
+    async function load() {
+        student = await Student.getById(studentAttendanceRecord.studentId);
+        accessibleQuranPages = await student.getAccessibleQuranPages();
+        recitedPagesRecords = await PageRecitationRecord.getStudentAvailablePageRecitationRecords(student.id);
+        pagesRewardCancellationRecords = await RewardCancellationRecord.getStudentAccessibleRecords(student.id);
+    }
+
     $effect(async () => {
         if (studentAttendanceRecord != null) {
-            await loadQuranPages();
+            await load();
         }
     });
 
@@ -47,23 +74,53 @@
         }
     }
 
-    // ✅ Multi-selection with single-selection override for recited pages
+    /**
+     * @param {QuranPage} quranPage
+     * @returns {PageRecitationRecord}
+     */
+    function findRecitationRecord(quranPage) {
+        if (quranPage == null) return null;
+        return recitedPagesRecords.find(record => record.pageId == quranPage.id);
+    }
+
+    /**
+     * @param {PageRecitationRecord} recitationRecord
+     * @returns {RewardCancellationRecord}
+     */
+    function findCancellationRecord(recitationRecord) {
+        if (recitationRecord == null) return null;
+        return pagesRewardCancellationRecords.find(record => record.pageRecitationRecordId == recitationRecord.id);
+    }
+
+    /** 
+     * @param {QuranPage} quranPage
+     */
+    function selectPage2(quranPage) {
+        let recitationRecord = findRecitationRecord(quranPage);
+        let rewardCancellationRecord = findCancellationRecord(recitationRecord);
+
+        if (rewardCancellationRecord != null) {
+
+        } else if (recitationRecord != null) {
+
+        } else {
+
+        }
+    }
+
     function selectPage(page) {
         if (!page) {
-            // Deselect all
             accessableQuranPagesOverview.forEach(p => (p.isHighlighted = false));
             highlightedPages = [];
             resetButtons();
             return;
         }
 
-        // If page is recited or cancelled → disable all others and highlight only this one
         if (page.isRecited || page.isRecitationCancelled) {
             accessableQuranPagesOverview.forEach(p => (p.isHighlighted = false));
             page.isHighlighted = true;
             highlightedPages = [page];
         } else {
-            // Toggle non-recited pages
             if (page.isHighlighted) {
                 page.isHighlighted = false;
                 highlightedPages = highlightedPages.filter(p => p.id !== page.id);
@@ -74,6 +131,11 @@
         }
 
         updateButtonsVisibility();
+    }
+
+    /** * @param {QuranPage} page */
+    function handleClickQuranPage(page) {
+
     }
 
     function resetButtons() {
@@ -101,13 +163,8 @@
 
     async function handleSubmit() {
         const { id, ...dto } = studentAttendanceRecord;
-        try {
-            await updateStudentAttendance(studentAttendanceRecord.id, dto);
-            history.back();
-        } catch (e) {
-            console.error(e);
-            alert("حدث خطأ أثناء الحفظ.");
-        }
+        await studentAttendanceRecord.save();
+        history.back();
     }
 
     // ✅ Register all highlighted pages together
@@ -169,6 +226,8 @@
             console.error(e);
         }
     }
+
+    let numberContainer = $state({value: 0});
 </script>
 
 <div class="container">
@@ -179,8 +238,9 @@
             label="الحضور"
             options={[
                 { value: "Attended", text: "حاضر" },
+                { value: "AttendedLate", text: "حاضر متأخر" },
                 { value: "AbscentWithExecuse", text: "غياب بعذر" },
-                { value: "AbscentWithoutExecuse", text: "غياب بدون عذر" }
+                { value: "AbscentWithoutExecuse", text: "غياب بدون عذر" },
             ]}
             bind:value={studentAttendanceRecord.status}
             zeroValue={null}
@@ -188,33 +248,23 @@
 
         <div style="height: 30px;"></div>
 
-        {#if studentAttendanceRecord.status === "Attended"}
+        {#if showRecitationRecords}
             <div class="actions-buttons-container">
-                {#if showRecitationRegisterer}
-                    <Button onclick={registerRecitation}>تسجيل الحفظ</Button>
-                {/if}
-                {#if showRecitationDeleter}
-                    <Button onclick={deleteRecitation}>حذف التسميع</Button>
-                {/if}
-                {#if showPageRewardCanceller}
-                    <Button onclick={cancelPageReward}>إلغاء نقاط الصفحة</Button>
-                {/if}
-                {#if showPageRewardCancellationDeleter}
-                    <Button onclick={deletePageCancellation}>إلغاء مبطل النقاط</Button>
-                {/if}
-                {#if highlightedPages.length > 0}
-                    <Button onclick={() => selectPage(null)}>إلغاء التحديد</Button>
-                {/if}
+                {#if false} <Button onclick={registerRecitation}>تسجيل الحفظ</Button> {/if}
+                {#if false} <Button onclick={deleteRecitation}>حذف التسميع</Button> {/if}
+                {#if false} <Button onclick={cancelPageReward}>إلغاء نقاط الصفحة</Button> {/if}
+                {#if false} <Button onclick={deletePageCancellation}>إلغاء مبطل النقاط</Button> {/if}
+                {#if false} <Button onclick={() => selectPage(null)}>إلغاء التحديد</Button> {/if}
             </div>
 
             <p><b>الحفظ:</b></p>
             <div style="height: 10px;"></div>
 
             <div class="pages-container">
-                {#each accessableQuranPagesOverview as page, i}
+                {#each accessibleQuranPages as page, i}
                     <RecitationPageBox
-                        onclick={() => selectPage(page)}
-                        bind:quranPage={accessableQuranPagesOverview[i]}
+                        onclick={() => handleClickQuranPage(page)}
+                        bind:quranPage={accessibleQuranPages[i]}
                         bind:studentAttendanceRecord={studentAttendanceRecord}
                     />
                 {/each}

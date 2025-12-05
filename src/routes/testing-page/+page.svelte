@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     import Button from "$lib/components/Button.svelte";
   import StudentAttendanceCell from "$lib/components/forms/StudentAttendanceCell.svelte";
     import GroupActivityRecordItem from "$lib/components/GroupActivityRecordItem.svelte";
@@ -126,4 +126,4 @@
     <Button onclick={handleDelete}>حذف</Button>
 
     <p>{instructor?.password}</p>
-</div>
+</div> -->

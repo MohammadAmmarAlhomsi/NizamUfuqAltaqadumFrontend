@@ -27,13 +27,11 @@
     <div style="height: 10px;"></div>
     
     <div class={styles['stats-container']}>
-        {#if source.summary != null}
-            <div class={[styles['line'], styles['Attended']]}><span></span>الحضور: {source.summary.attendedCount}</div>
-            <div class={[styles['line'], styles['AttendedLate']]}><span></span>الحضور المتأخر: {source.summary.attendedLateCount}</div>
-            <div class={[styles['line'], styles['AbscentWithExecuse']]}><span></span>الغياب بعذر: {source.summary.abscentWithExecuseCount}</div>
-            <div class={[styles['line'], styles['AbscentWithoutExecuse']]}><span></span>الغياب بدون عذر: {source.summary.abscentWithoutExecuseCount}</div>
-            <div class={[styles['line'], styles['Default']]}><span></span>بدون تحديد: {source.summary.attendedLateCount}</div>
-        {/if}
+        <div class={[styles['line'], styles['Attended']]}><span></span>الحضور: {source?.summary?.attendedCount}</div>
+        <div class={[styles['line'], styles['AttendedLate']]}><span></span>الحضور المتأخر: {source?.summary?.attendedLateCount}</div>
+        <div class={[styles['line'], styles['AbscentWithExecuse']]}><span></span>الغياب بعذر: {source.summary?.abscentWithExecuseCount}</div>
+        <div class={[styles['line'], styles['AbscentWithoutExecuse']]}><span></span>الغياب بدون عذر: {source.summary?.abscentWithoutExecuseCount}</div>
+        <div class={[styles['line'], styles['Default']]}><span></span>بدون تحديد: {source?.summary?.attendedLateCount}</div>
     </div>
 
     <div style="height: 10px"></div>

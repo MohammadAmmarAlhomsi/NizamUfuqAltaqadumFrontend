@@ -37,10 +37,6 @@ export class HalqaAttendanceSummaryCell {
         await this.load();
     }
 
-    load = async () => {
-        this.summary = await this.halqaAttendanceRecord.getSummary();
-    }
-
     handleClick = () => {
         window.location.href = `/halqa/${this.halqaAttendanceRecord.halqaId}/attendance/${this.halqaAttendanceRecord.id}`;
     }

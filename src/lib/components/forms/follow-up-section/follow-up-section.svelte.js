@@ -30,6 +30,8 @@ export class FollowUpSection {
 
     /** @param {AttendanceDay} day */
     handleCreateHalqaAttendance = async (day) => {
+        this.handleCloseForm();
+
         let halqaAttendanceRecord = new HalqaAttendanceRecord(this.halqaId, day.id, '');
         let response = await halqaAttendanceRecord.save();
         if (response.succeed == false) {
@@ -37,8 +39,6 @@ export class FollowUpSection {
         } else {
             await this.load();
         }
-
-        this.handleCloseForm();
     }
 
     handleOpenForm = () => {
@@ -53,9 +53,12 @@ export class FollowUpSection {
         this.halqa = await Halqa.getById(this.halqaId);
         this.halqaAttendanceRecords = await HalqaAttendanceRecord.getHalqaAttendanceRecords(this.halqaId);
         await HalqaAttendanceRecord.includeHalqaStudentMissingRecords(this.halqa.id);
+        let summaries = await HalqaAttendanceRecord.getHalqaAttendanceSummaries(this.halqa.id);
+        let summariesDict = Object.fromEntries(
+            summaries.map(summary => [summary.halqaAttendanceRecordId, summary])
+        );
 
         this.halqaAttendanceCells = this.halqaAttendanceRecords.map(record => new HalqaAttendanceSummaryCell(record))
-        for (let halqaAttendanceCell of this.halqaAttendanceCells)
-            await halqaAttendanceCell.load();
+        this.halqaAttendanceCells.forEach(cell => cell.summary = summariesDict[cell.halqaAttendanceRecord.id]);
     }
 }

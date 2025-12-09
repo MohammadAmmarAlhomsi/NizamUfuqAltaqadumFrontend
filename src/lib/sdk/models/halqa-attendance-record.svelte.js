@@ -7,6 +7,7 @@ export class HalqaAttendanceSummary extends APIModel {
     constructor(attendedCount = 0, attendedLateCount = 0, abscentWithExecuseCount = 0, abscentWithoutExecuseCount = 0, notSelectedCount = 0) {
         super();
 
+        /** @type {String} */ this.halqaAttendanceRecordId = $state('')
         /** @type {Number} */ this.attendedCount = $state(attendedCount);
         /** @type {Number} */ this.attendedLateCount = $state(attendedLateCount);
         /** @type {Number} */ this.abscentWithExecuseCount = $state(abscentWithExecuseCount);
@@ -34,6 +35,14 @@ export class HalqaAttendanceRecord extends APIModel {
 
     static async includeHalqaStudentMissingRecords(halqaId) {
         return await APIPost(`${host}/api/halqa-attendance/halqa/${halqaId}/include-missing-student-records`);
+    }
+
+    /** 
+     * @param {String} halqaId 
+     * @returns {HalqaAttendanceSummary[]}
+    */
+    static async getHalqaAttendanceSummaries(halqaId) {
+        return await APIGetArray(`${host}/api/halqa-attendance/${halqaId}/attendance/summary/all`, HalqaAttendanceSummary);
     }
 
     /**

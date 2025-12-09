@@ -1,0 +1,49 @@
+.group-activity-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s all ease-in-out;
+}
+
+.group-activity-cell:hover {
+    transform: scale(1.05);
+}
+
+.group-activity-container {
+    display: grid;
+    width: 900px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 0.1fr));
+    justify-content: center;   /* centers the grid tracks */
+    gap: 25px;
+    text-align: center;
+    color: black;
+}
+
+.delete-button {
+    outline: none;
+    border: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 20px;
+    padding: 2px;
+    background: rgba(255, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background: rgba(255, 0, 0, 0.5);
+}
+
+.button-icon {
+    width: 20px;
+}

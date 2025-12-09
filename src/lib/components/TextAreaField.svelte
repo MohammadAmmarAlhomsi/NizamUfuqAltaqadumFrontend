@@ -1,10 +1,10 @@
 <script>
-    let { label='LABEL', onsubmit=(t)=>{}, value=$bindable(), ...props } = $props()
+    let { label='LABEL', fontSize='16px', labelWidth='100px', onsubmit=(t)=>{}, value=$bindable(), ...props } = $props()
 </script>
 
 <div class='container'>
-    <p>{label}</p>
-    <textarea onblur={onsubmit} bind:value={value}></textarea>
+    <p style={`width: ${labelWidth};`}>{label}</p>
+    <textarea style={`font-size: ${fontSize}`} onblur={onsubmit} bind:value={value}></textarea>
 </div>
 
 <style>
@@ -18,7 +18,6 @@
 
     p {
         margin-inline-end: 20px;
-        width: 100px;
     }
 
     textarea {
@@ -31,6 +30,5 @@
         flex: 1;
         height: 100%;
         box-sizing: border-box;
-        font-size: 16px;
     }
 </style>

@@ -58,6 +58,7 @@ export class APIModel {
 
     save = async (alertError=false) => {
         let response = await APIPut(this.constructor.upsertEndPoint(this.id), this.toObject());
+        console.log(this.toObject())
         if (alertError && !response.succeed)
             alert(response.error);
         return response;

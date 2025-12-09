@@ -6,6 +6,7 @@
     import StudentAttendanceForm from '$lib/components/forms/student-attendance-form/StudentAttendanceFormRenderer.svelte';
     import HalqaAttendanceForm from '$lib/components/forms/HalqaAttendanceForm.svelte';
     import BaseHalqaRecordInitiatorForm from '$lib/components/forms/BaseHalqaRecordInitiatorForm.svelte';
+    import GroupActivitiesSectionRenderer from '$lib/components/group-activities-section/group-activities-section-renderer.svelte';
 
     import { page } from '$app/state';
     import { goto } from '$app/navigation';
@@ -14,6 +15,7 @@
     import { verifyCreateInstructorPermission, createInstructor, getInstructorById, verifyUpdateInstructorPermission, updateInstructorAsync, fetchPairedInstructor, fetchResponsibleHalqat } from '$lib/sdk/instructor';
     import { fetchAllHalqaAttendances, fetchHalqaById, fetchHalqaGroupActivities, registerHalqaAttendance } from '$lib/sdk/halqa';
     import { FollowUpSection } from '$lib/components/forms/follow-up-section/follow-up-section.svelte';
+    import { GroupActivitiesSection } from '$lib/components/group-activities-section/group-activities-section.svelte';
 
     import dayjs from "dayjs";
     import IndivisualActivityForm from '$lib/components/forms/IndivisualActivityForm.svelte';
@@ -152,6 +154,8 @@
     async function handleCreateActivity() {
         await fetchGroupActivities();
     }
+
+    let groupActivitiesSection = $state(new GroupActivitiesSection(halqaId));
 </script>
 
 <main>
@@ -161,7 +165,7 @@
             <TabsContainer bind:selectedIdx={tabIndex} tabs={[ 
                 { label: 'الطلاب' }, 
                 { label: 'المتابعة' }, 
-                { label: 'الأنشطة الجماعية' }]}>
+                { label: 'الأنشطة' }]}>
             </TabsContainer>
         </div>
     </Header>
@@ -173,7 +177,8 @@
     {:else if tabIndex == 1}
         <FollowUpSectionRenderer bind:source={followUpSection}/>
     {:else if tabIndex == 2}
-        <Button width='150px' onclick={handleAddGroupActivity}>إضافة نشاط جماعي</Button>
+        <GroupActivitiesSectionRenderer bind:source={groupActivitiesSection}/>
+        <!-- <Button width='150px' onclick={handleAddGroupActivity}>إضافة نشاط جماعي</Button>
 
         <div class="group-activities-container">
             {#each groupsActivities as groupActivity, i}
@@ -183,7 +188,7 @@
                     onDelete={onDeleteGroupRecord}
                     />
             {/each}
-        </div>
+        </div> -->
     {/if}
     
     <div style="height: 50px;"></div>
@@ -219,52 +224,6 @@
 </main>
 
 <style>
-    .last-day {
-        transform: scale(1.075);       
-        transition: transform 0.2s ease;
-    }
-
-    .color-box {
-        width: 12px;
-        height: 12px;
-        border-radius: 2px;
-        display: inline-block;
-        margin-inline-end: 10px;
-    }
-
-    .color-box.red {
-        background-color: #e74c3c; /* red */
-        /* box-shadow: 0px 0px 2px 0px rgba(255, 0, 0, 1.0); */
-    }
-
-    .color-box.yellow {
-        background-color: #f1c40f; /* yellow */
-        /* box-shadow: 0px 0px 2px 0px #f1c40f; */
-    }
-
-    .color-box.green {
-        background-color: #27ae60; /* green */
-        /* box-shadow: 0px 0px 2px 0px #27ae60; */
-    }
-
-    .color-box.green-dark {
-        background-color: rgb(183, 231, 192);
-    }
-
-    .color-box.white {
-        background: white;
-        box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
-    }
-
-    .red-text {  color: #e74c3c; }
-    .yellow-text { color: #f1c40f; }
-    .green-text { color: #27ae60; }
-    .green-dark-text { color: rgb(162, 224, 174); }
-
-    .detailed-attendance-record {
-        text-align: start;
-    }
-
     .group-activities-container {
         margin-top: 50px;
         display: grid;
@@ -276,41 +235,12 @@
         justify-content: center;
     }
 
-    .attendance-days-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 220px));
-        justify-content: center;
-        gap: 30px;
-        width: 80%;
-    }
-
-    .attendance-day-button {
-        padding: 15px;
-        background: white;
-        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
-        border-radius: 15px;
-        border: none;
-        outline: none;
-        margin-bottom: 15px;
-        cursor: pointer;
-    }
-
     main {
         min-height: 100vh;
 
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    .container {
-        width: 100%;
-    }
-
-    .header-container {
-        display: flex;
-        justify-content: center;
-        flex-direction: row;
     }
 
     .overlay {

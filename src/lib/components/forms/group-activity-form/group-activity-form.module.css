@@ -1,0 +1,79 @@
+.container {
+    position: fixed;
+
+    padding: 20px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+
+    left: 50%; top: 50%;
+
+    transform: translate(-50%, -50%);
+    background: #fafafa;
+    color: black;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.title {
+    font-size: 25px;
+    text-align: center;
+}
+
+.students-container {
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+
+    height: 150px;
+    overflow-y: auto;
+
+    gap: 10px;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+}
+
+.weight-element {
+    display: flex;
+}
+
+.weight-element-number-field {
+    background: none;
+    border: none;
+    border: 1px solid rgb(226, 226, 226);
+    border-radius: 7px;
+    width: 50px;
+    outline: none;
+    text-align: center;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.error-text-container {
+    height: 0px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-text {
+    color: red;
+    text-align: center;
+}

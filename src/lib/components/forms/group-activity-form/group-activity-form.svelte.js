@@ -13,6 +13,10 @@ export class GroupActivityForm {
         /** @type {Function} */ this.onCancel = () => {}
     }
 
+    onMount = () => {
+        this.errorMessage = '';
+    }
+
     /** 
      * @param {GroupActivity} groupActivity 
      * @param {Student[]} students

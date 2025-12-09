@@ -11,6 +11,10 @@
 
     /** @type {{ source: GroupActivityForm }} */
     let { source = $bindable(null) } = $props();
+
+    onMount(() => {
+        source.onMount();
+    })
 </script>
 
 <div class={styles['container']}>

@@ -63,8 +63,10 @@ export class GroupActivitiesSection {
     handleClickAddNew= async () => {
         let groupActivity = this.initiateNewGroupActivity();
         this.groupActivityForm.open(groupActivity, this.students, async isSubmitted => {
-            await groupActivity.save();
-            await this.loadGroupActivities();
+            if (isSubmitted) {
+                await groupActivity.save();
+                await this.loadGroupActivities();
+            }
         });
 
     }

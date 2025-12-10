@@ -12,6 +12,7 @@
     import { getUserData as getUserDataAsync } from '$lib/sdk/auth';
     import { onMount } from 'svelte';
     import { verifyCreateInstructorPermission } from '$lib/sdk/instructor';
+    import { retrieveAllStudents } from '$lib/sdk/student';
     
     let selectedTabIdx = $state(0);
     
@@ -52,7 +53,7 @@
 
     {#snippet renderTableElement()}
         {#if selectedTabIdx == 0}
-            <StudentsTable bind:this={tableComponentRef}/>
+            <StudentsTable loadStudents={retrieveAllStudents} bind:this={tableComponentRef}/>
         {:else if selectedTabIdx == 1}
             <InstructorsTable bind:this={tableComponentRef}/>
         {:else if selectedTabIdx == 2}

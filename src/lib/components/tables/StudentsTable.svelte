@@ -12,6 +12,7 @@
         { label: "الاسم الكامل", prop: "fullName" },
         { label: "اسم الأب", prop: "fatherName" },
         { label: "اسم الأم", prop: "motherName" },
+        { label: "الحلقة", prop: "halqaName" },
         { label: "سنة الميلاد", prop: "birthYear" },
         { label: "الجنسية", prop: "nationality" },
         { label: "المدرسة", prop: "school" },
@@ -22,7 +23,6 @@
         { label: "عمل الأم", prop: "motherWork" },
         { label: "الإمارة", prop: "emirate" },
         { label: "المنطقة", prop: "region" },
-        { label: "الحلقة", prop: "halqaName" },
     ];
 
     function handleEdit(data) {
@@ -41,6 +41,7 @@
         if (loadStudents != null) {
             try {
                 students = await loadStudents();
+                console.log(students.length, '<=====');
             } catch (e) {
                 console.log('unable to load students');
                 console.error(e);

@@ -1,5 +1,6 @@
 <script>
-    import Header from '$lib/components/layout/Header.svelte';
+import Header from '$lib/components/layout/Header.svelte';
+import LoaderOverlay from '$lib/components/LoaderOverlay.svelte';
     import StudentsTable from '$lib/components/tables/StudentsTable.svelte';
     import Button from '$lib/components/Button.svelte';
     import TabsContainer from '$lib/components/TabsContainer.svelte';
@@ -43,6 +44,8 @@
 
     let initialTabIdx = page.url.searchParams.get('tabIdx')
     let hasInitialized = false;
+
+    let loadingPage = $state(true);
 
     onMount(async () => {
         const param = new URL(window.location.href).searchParams.get('tabIdx');
@@ -119,22 +122,26 @@
     }
     
     onMount(async () => {
-        let userData = await getUserData();
-        console.log(userData);
-        if (userData == null) {
-            window.location.href = `/signin`
-        }
-
         try {
-            halqa = await fetchHalqaById(halqaId);
-            console.log($state.snapshot(halqa));
-        } catch (e) {
-            console.error(e);
+            let userData = await getUserData();
+            console.log(userData);
+            if (userData == null) {
+                window.location.href = `/signin`;
+                return;
+            }
+
+            try {
+                halqa = await fetchHalqaById(halqaId);
+                console.log($state.snapshot(halqa));
+            } catch (e) {
+                console.error(e);
+            }
+
+            await fetchGroupActivities();
+            await fetchHalqat();
+        } finally {
+            loadingPage = false;
         }
-
-        await fetchGroupActivities();
-
-        await fetchHalqat();
     })
 
     async function fetchGroupActivities() {
@@ -159,18 +166,23 @@
 </script>
 
 <main>
+    {#if loadingPage}
+        <div style="height: var(--header-height, 140px); width: 100%;"></div>
+        <LoaderOverlay text="جارٍ تحميل بيانات الحلقة..." />
+    {/if}
+
     <Header>
-        <h1 style="margin-inline-start: 50px; font-size: 2em;">{halqa?.name}</h1>
-        <div style="position: absolute; right: 50%; transform: translate(50%, 0)">
-            <TabsContainer bind:selectedIdx={tabIndex} tabs={[ 
-                { label: 'الطلاب' }, 
-                { label: 'المتابعة' }, 
-                { label: 'الأنشطة' }]}>
-            </TabsContainer>
+        <div class="halqa-header">
+            <h1 class="halqa-title">{halqa?.name}</h1>
+            <div class="halqa-tabs">
+                <TabsContainer bind:selectedIdx={tabIndex} tabs={[ 
+                    { label: 'الطلاب' }, 
+                    { label: 'المتابعة' }, 
+                    { label: 'الأنشطة' }]}>
+                </TabsContainer>
+            </div>
         </div>
     </Header>
-
-    <div style="height: 110px;"></div>
 
     {#if tabIndex == 0}
         <StudentsSection bind:halqa={halqa}/>
@@ -256,5 +268,38 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .halqa-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .halqa-title {
+        font-size: 1.9em;
+        margin: 0;
+        text-align: center;
+        flex: 1 1 auto;
+    }
+
+    .halqa-tabs {
+        flex: 0 1 auto;
+        display: flex;
+        justify-content: center;
+    }
+
+    @media (max-width: 900px) {
+        .halqa-title {
+            font-size: 1.5em;
+        }
+
+        .halqa-tabs {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>

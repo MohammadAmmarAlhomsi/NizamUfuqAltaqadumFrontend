@@ -5,8 +5,9 @@
     import { Halqa } from "$lib/sdk/models/halqa.svelte";
     import { HalqaAttendanceRecord } from "$lib/sdk/models/halqa-attendance-record.svelte";
     
-    import Header from "$lib/components/layout/Header.svelte";
-    import HalqaAttendanceForm from "$lib/components/forms/HalqaAttendanceForm.svelte";
+import Header from "$lib/components/layout/Header.svelte";
+import HalqaAttendanceForm from "$lib/components/forms/HalqaAttendanceForm.svelte";
+import LoaderOverlay from "$lib/components/LoaderOverlay.svelte";
 
     import dayjs from "dayjs";
     import "dayjs/locale/ar";
@@ -22,23 +23,33 @@
     /** @type {HalqaAttendanceRecord} */
     let attendanceRecord = $state(null);
 
-    onMount(async () => {
-        halqa = await Halqa.getById(halqaId);
-        attendanceRecord = await HalqaAttendanceRecord.getById(halqaAttendanceRecordId);
+    let loadingPage = $state(true);
 
-        if (attendanceRecord == null || halqa == null) {
-            alert('حدث خطأ أثناء تحصيل بيانات الحلقة أو ملف تسجيل الحضور.');
-            return;
+    onMount(async () => {
+        try {
+            halqa = await Halqa.getById(halqaId);
+            attendanceRecord = await HalqaAttendanceRecord.getById(halqaAttendanceRecordId);
+
+            if (attendanceRecord == null || halqa == null) {
+                alert('حدث خطأ أثناء تحصيل بيانات الحلقة أو ملف تسجيل الحضور.');
+                return;
+            }
+        } finally {
+            loadingPage = false;
         }
     });
 </script>
 
 <main>
+    {#if loadingPage}
+        <div style="height: var(--header-height, 140px); width: 100%;"></div>
+        <LoaderOverlay text="جارٍ تحميل سجل الحضور..." />
+    {/if}
     <Header>
         {#if attendanceRecord != null}
-            <h1>{dayjs(attendanceRecord.attendanceDay.date).format('dddd DD/MM/YYYY')}</h1>
-            <div style="position: absolute; left: 50%; transform: translate(-50%, 0);">
-                <h1>حضور الحلقة</h1>
+            <div class="attendance-header">
+                <h1 class="attendance-date">{dayjs(attendanceRecord.attendanceDay.date).format('dddd DD/MM/YYYY')}</h1>
+                <h1 class="attendance-title">حضور الحلقة</h1>
             </div>
         {/if}
     </Header>
@@ -52,10 +63,6 @@
 </main>
 
 <style>
-    h1 {
-        margin-inline-start: 50px;
-    }
-
     .container {
         display: flex;
         justify-content: center;
@@ -68,5 +75,36 @@
         flex-direction: column;
         align-items: center;
         height: 100vh;
+    }
+
+    .attendance-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+
+    .attendance-date,
+    .attendance-title {
+        margin: 0;
+        font-size: 1.6em;
+    }
+
+    .attendance-title {
+        font-size: 1.5em;
+    }
+
+    @media (max-width: 768px) {
+        .attendance-date,
+        .attendance-title {
+            font-size: 1.3em;
+        }
+
+        .attendance-header {
+            gap: 10px;
+        }
     }
 </style>

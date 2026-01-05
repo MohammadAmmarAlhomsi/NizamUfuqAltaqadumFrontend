@@ -45,12 +45,15 @@
 
         box-sizing: border-box;
         cursor: pointer;
+        gap: 8px;
+        width: 100%;
     }
 
     p {
         margin-inline-end: 20px;
         text-align: start;
         cursor: pointer;
+        font-weight: 600;
 
 
         box-sizing: border-box;
@@ -75,5 +78,22 @@
         width: 100%;
 
         box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        p {
+            margin: 0;
+            width: 100% !important;
+        }
+
+        .select-container {
+            width: 100%;
+            min-width: 0 !important;
+        }
     }
 </style>

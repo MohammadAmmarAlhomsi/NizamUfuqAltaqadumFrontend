@@ -14,10 +14,12 @@
         width: 100%;
         height: 100%;
         box-sizing: border-box;
+        gap: 8px;
     }
 
     p {
         margin-inline-end: 20px;
+        font-weight: 600;
     }
 
     textarea {
@@ -30,5 +32,22 @@
         flex: 1;
         height: 100%;
         box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        p {
+            margin: 0;
+            width: 100% !important;
+        }
+
+        textarea {
+            min-width: 0;
+            width: 100%;
+        }
     }
 </style>

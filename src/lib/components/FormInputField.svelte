@@ -18,10 +18,13 @@
     .container {
         display: flex;
         align-items: center;
+        gap: 8px;
+        width: 100%;
     }
 
     p {
         margin-inline-end: 20px;
+        font-weight: 600;
     }
 
     input {
@@ -30,5 +33,24 @@
         border-radius: 10px;
         box-shadow: 0px 3px 3px 3px rgba(0, 0, 0, 0.11);
         padding: 5px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        p {
+            margin: 0;
+            width: 100% !important;
+        }
+
+        input {
+            width: 100%;
+            min-width: 0 !important;
+        }
     }
 </style>

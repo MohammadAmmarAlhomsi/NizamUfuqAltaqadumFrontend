@@ -24,7 +24,7 @@
 <div class={styles["container"]}>
     <Button onclick={source.handleOpenForm}>تسجيل يوم جديد</Button>
 
-    <div style="height: 30px;"></div>
+    <div style="height: 18px;"></div>
 
     <div class={styles["attendance-days-container"]}>
         {#each source.halqaAttendanceCells as attendanceCell, i}

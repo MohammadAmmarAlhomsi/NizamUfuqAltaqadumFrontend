@@ -18,29 +18,31 @@
 </script>
 
 {#if source != null}
-    <Button onclick={source.handleClickAddNew}>إضافة نشاط جديد</Button>
+    <div class={styles["activities-shell"]}>
+        <Button onclick={source.handleClickAddNew}>إضافة نشاط جديد</Button>
 
-    <div style="height: 30px;"></div>
-    
-    <div class={styles['group-activity-container']}>
-        {#each source.groupActivities as groupActivity}
-            <div 
-                    role="button"
-                    tabindex="0"
-                    onclick={() => source.handleClickGroupActivity(groupActivity)}
-                    onkeydown={ch => {}}
-                    class={styles['group-activity-cell']}>
-                <p><b>{groupActivity.name}</b></p>
-                <p>{formatArabicDate(groupActivity.happenedAt)}</p>
+        <div style="height: 18px;"></div>
+        
+        <div class={styles['group-activity-container']}>
+            {#each source.groupActivities as groupActivity}
+                <div 
+                        role="button"
+                        tabindex="0"
+                        onclick={() => source.handleClickGroupActivity(groupActivity)}
+                        onkeydown={ch => {}}
+                        class={styles['group-activity-cell']}>
+                    <p><b>{groupActivity.name}</b></p>
+                    <p>{formatArabicDate(groupActivity.happenedAt)}</p>
 
-                <button onclick={(e) => { e.stopPropagation(); source.handleClickDelete(groupActivity) }} class={styles['delete-button']}><img class={styles['button-icon']} src="/icons/delete-icon.png" alt=""></button>
-            </div>
-        {/each}
+                    <button onclick={(e) => { e.stopPropagation(); source.handleClickDelete(groupActivity) }} class={styles['delete-button']}><img class={styles['button-icon']} src="/icons/delete-icon.png" alt=""></button>
+                </div>
+            {/each}
+        </div>
+
+        {#if source.groupActivityForm?.isActive}
+            <GroupActivityFormRenderer bind:source={source.groupActivityForm}/>
+        {/if}
+
+        <ConfirmationWindowRenderer bind:source={source.confirmationWindow}/>
     </div>
-
-    {#if source.groupActivityForm?.isActive}
-        <GroupActivityFormRenderer bind:source={source.groupActivityForm}/>
-    {/if}
-
-    <ConfirmationWindowRenderer bind:source={source.confirmationWindow}/>
 {/if}

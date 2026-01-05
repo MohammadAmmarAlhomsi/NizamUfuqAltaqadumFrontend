@@ -89,6 +89,7 @@
         position: absolute;
         left: 50%;
         transform: translate(-50%, 0);
+        gap: 12px;
     }
 
     main {
@@ -96,5 +97,21 @@
         flex-direction: column;
         align-items: center;
         height: 100vh;
+    }
+
+    @media (max-width: 1024px) {
+        .menues-header-container {
+            position: static;
+            transform: none;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            padding-top: 150px;
+        }
     }
 </style>

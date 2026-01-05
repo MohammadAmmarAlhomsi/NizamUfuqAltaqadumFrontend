@@ -41,7 +41,10 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        height: 100vh;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 40px 16px 40px;
+        box-sizing: border-box;
+        gap: 28px;
     }
 </style>

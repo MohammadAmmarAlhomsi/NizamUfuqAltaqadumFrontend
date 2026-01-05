@@ -7,7 +7,8 @@
         columns = [], 
         onEdit = (inst) => {}, 
         onDelete = (id) => {},
-        onclickItem = item => {} 
+        onclickItem = item => {},
+        loading = $bindable(false),
     } = $props();
 
     $effect(() => {
@@ -28,7 +29,11 @@
             </tr>
         </thead>
         <tbody>
-            {#if items.length > 0}
+            {#if loading}
+                <tr>
+                    <td colspan={columns.length + 2} class="loading-cell">جارٍ التحميل...</td>
+                </tr>
+            {:else if items.length > 0}
                 {#each items as item, i (item.id)}
                     <tr onclick={() => onclickItem(item)}>
                         <td>{i+1}.</td>
@@ -56,6 +61,9 @@
     .table-container {
         width: 100%;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        box-sizing: border-box;
     }
 
     table {
@@ -99,5 +107,23 @@
         text-align: center;
         padding: 20px;
         color: #888;
+    }
+
+    .loading-cell {
+        text-align: center;
+        padding: 20px;
+        color: #4f46e5;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        table {
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            padding: 10px 12px;
+        }
     }
 </style>

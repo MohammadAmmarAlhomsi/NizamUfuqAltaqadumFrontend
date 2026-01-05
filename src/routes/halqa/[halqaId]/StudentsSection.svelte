@@ -12,14 +12,34 @@
 </script>
 
 {#if halqa != null}
-    <div class="vertical-center">
-        <h1 style="margin-bottom: 20px;">طلاب الحلقة</h1>
-        <div class="container">
+    <div class="vertical-center students-wrap">
+        <h1 class="students-title">طلاب الحلقة</h1>
+        <div class="table-scroll">
             <StudentsTable loadStudents={retrieveHalqaStudents} />
         </div> 
     </div>
 {/if}
 
 <style>
+    .students-wrap {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 12px;
+        box-sizing: border-box;
+        align-items: stretch;
+        gap: 12px;
+    }
 
+    .students-title {
+        margin: 0;
+        margin-bottom: 8px;
+        text-align: center;
+        font-size: 1.4rem;
+    }
+
+    .table-scroll {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 </style>

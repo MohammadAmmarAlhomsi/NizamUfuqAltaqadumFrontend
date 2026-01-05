@@ -49,7 +49,6 @@
         <h1 style="margin-inline-start: 50px; font-size: 2em;">{instructor?.fullName}</h1>
     </Header>
 
-    <div style="height: 110px;"></div>
 </main>
 
 <style>

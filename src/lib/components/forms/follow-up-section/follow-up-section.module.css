@@ -4,15 +4,21 @@
     justify-content: center;
     align-items: center;
     width: 100%;
+    padding: calc(var(--header-height, 140px) + 12px) 12px 16px;
+    box-sizing: border-box;
+    gap: 12px;
 }
 
 .attendance-days-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 220px));
-        justify-content: center;
-        gap: 30px;
-        width: 80%;
-    }
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 220px));
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 1100px;
+    padding: 0 4px 20px;
+    box-sizing: border-box;
+}
 
 .overlay {
     position: fixed;
@@ -25,4 +31,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .attendance-days-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 18px;
+    }
 }

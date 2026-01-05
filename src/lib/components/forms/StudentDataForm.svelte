@@ -86,8 +86,7 @@
     }
 </script>
 
-<div>
-    <div style="height: 0px;"></div>
+<div class="form-shell">
     <div class="form-grid">
         <!-- Row 1 -->
         <FormInputField label='الاسم والكنية' bind:value={data.fullName}/>
@@ -130,6 +129,10 @@
 </div>
 
 <style>
+    .form-shell {
+        width: 100%;
+    }
+
     .form-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr); 
@@ -154,5 +157,28 @@
     .submit-button {
         justify-self: end;
         width: auto;
+    }
+
+    @media (max-width: 1024px) {
+        .form-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 24px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+            row-gap: 18px;
+        }
+
+        .submit-button {
+            width: 100%;
+            justify-self: stretch;
+        }
+
+        .notes {
+            height: auto;
+        }
     }
 </style>

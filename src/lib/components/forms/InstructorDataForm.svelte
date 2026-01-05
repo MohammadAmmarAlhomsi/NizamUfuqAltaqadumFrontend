@@ -109,9 +109,18 @@
 </div>
 
 <style>
+    .container {
+        width: min(1100px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
     .row {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
     }
 
     .notes {
@@ -122,5 +131,16 @@
         height: 30px;
         margin: 10px 0px;
         color: red;
+    }
+
+    @media (max-width: 768px) {
+        .row {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .notes {
+            height: auto;
+        }
     }
 </style>

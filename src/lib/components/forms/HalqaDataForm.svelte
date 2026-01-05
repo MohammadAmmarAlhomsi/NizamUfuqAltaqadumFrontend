@@ -62,19 +62,15 @@
 <div class="container">
     <div class="row">
         <FormInputField label='اسم الحلقة' bind:value={data.name}/>
-        <div style="width: 50px;"></div>
         <DropdownField label='اسم الأستاذ' bind:value={data.instructorId} options={instructors.map(inst => { return { value: inst.id, text: inst.fullName } })}/>
     </div>
-    <div style="height: 25px;"></div>
     <div class="row">
         <DropdownField label='اليوم' bind:value={data.halqaDay} options={[ { value: 'Saturday', text: 'السبت' }, { value: 'Sunday', text: 'الأحد' } ]}/>
     </div>
-    <div style="height: 25px;"></div>
     <div class="row notes">
         <TextAreaField label='الملاحظات' bind:value={data.notes}/>
     </div>
-    <div style="height: 25px;"></div>
-    <div class='row'>
+    <div class='row actions'>
         <p class="error-text">{errorText}</p>
         <div style="flex: 1;"></div>
         <Button onclick={handleSubmit}>{submitButtonText}</Button>
@@ -85,15 +81,31 @@
     .row {
         display: flex;
         flex-direction: row;
+        gap: 16px;
+        width: 100%;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
     }
 
     .notes {
-        height: 75px;
+        height: auto;
     }
 
     .error-text {
         height: 30px;
         margin: 10px 0px;
         color: red;
+    }
+
+    .actions {
+        align-items: center;
+    }
+
+    @media (max-width: 768px) {
+        .row {
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
     }
 </style>

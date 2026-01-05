@@ -40,6 +40,10 @@
         border: 2px solid black;
         border-radius: 15px;
         padding: 0px 10px;
+        gap: 4px;
+        flex-wrap: wrap;
+        width: fit-content;
+        max-width: 100%;
     }
 
     .tab {
@@ -51,6 +55,7 @@
         opacity: 50%;
         cursor: pointer;
         font-weight: bold;
+        white-space: nowrap;
     }
 
     .tab-first {
@@ -67,5 +72,16 @@
         transition: all ease-in-out 0.1s;
         text-decoration: underline;
         opacity: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            justify-content: center;
+            padding: 6px 8px;
+        }
+
+        .tab {
+            font-size: 0.95rem;
+        }
     }
 </style>

@@ -52,7 +52,6 @@
         text-align: start;
         cursor: pointer;
 
-
         box-sizing: border-box;
     }
 
@@ -63,6 +62,7 @@
         cursor: pointer;
 
         padding: 3px;
+        width: 260px;
 
         box-sizing: border-box;
     }

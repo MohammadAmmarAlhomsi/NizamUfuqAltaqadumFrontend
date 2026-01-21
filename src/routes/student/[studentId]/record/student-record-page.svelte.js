@@ -18,6 +18,18 @@ export class StudentRecordPage {
 
         /** @type {BaseTable<StudentAttendanceDaySummaryTableElement>} */
         this.table = $state(null);
+
+        /** @type {int} */
+        this.totalPoints = $state(0);
+
+        /** @type {int} */
+        this.totalRecitationPoints = $state(0);
+
+        /** @type {int} */
+        this.totalAttendancePoints = $state(0);
+
+        /** @type {int} */
+        this.totalActivitiesPoints = $state(0);
     }
 
     onMount = async () => {
@@ -36,11 +48,31 @@ export class StudentRecordPage {
             return null;
         }
         this.table.getColumnStyleClass = (header, element) => {
-            if (header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_POINTS_DISPLAY_NAME) {
+            if (header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_POINTS_COLUMN_DISPLAY_NAME) {
                 return styles['total-points-column']
+            } else if (
+                header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_MEMORIZATION_POINT_COLUMN_DISPLAY_NAME ||
+                header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ATTENDANCE_POINT_COLUMN_DISPLAY_NAME ||
+                header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ACTIVITIES_POINT_COLUMN_DISPLAY_NAME) {
+                return styles['start-dashed'];
             }
+            return null;
         }
 
         this.table.elements = records.map(r => new StudentAttendanceDaySummaryTableElement(r));
+
+        this.totalAttendancePoints = this.table.elements
+            .map(element => element.summary.attendancePoints)
+            .reduce((x1, x2) => x1 + x2, 0);
+
+        this.totalRecitationPoints = this.table.elements
+            .map(element => element.summary.pageRecitationPointsRecords.map(r => r.points).reduce((x1, x2) => x1 + x2, 0))
+            .reduce((x1, x2) => x1 + x2, 0);
+
+        this.totalActivitiesPoints = this.table.elements
+            .map(element => element.summary.indivsualActivities.map(r => r.weight).reduce((x1, x2) => x1 + x2, 0))
+            .reduce((x1, x2) => x1 + x2, 0);
+
+        this.totalPoints = this.totalAttendancePoints + this.totalRecitationPoints + this.totalActivitiesPoints;
     }
 }

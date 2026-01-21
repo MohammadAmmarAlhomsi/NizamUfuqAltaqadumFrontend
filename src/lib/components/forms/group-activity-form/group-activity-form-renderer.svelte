@@ -22,7 +22,7 @@
         <h1 class={styles['title']}>نشاط</h1>
 
         <FormInputField bind:value={source.groupActivity.name} labelWidth='150px' label="اسم النشاط"/>
-        <DateField bind:value={source.groupActivity.happenedAt} labelWidth='150px' label='التاريخ'/>
+        <DropdownField bind:value={source.groupActivity.attendanceDayId} labelWidth='150px' options={source.attendanceDaysOptions} label='التاريخ'/>
         <TextAreaField fontSize='auto' bind:value={source.groupActivity.notes} labelWidth='150px' label="الملاحظات"/>
 
         <div class={styles['error-text-container']}> 

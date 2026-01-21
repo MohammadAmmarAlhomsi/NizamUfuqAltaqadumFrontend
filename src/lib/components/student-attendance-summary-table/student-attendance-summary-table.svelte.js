@@ -4,6 +4,7 @@ import { SystemButton } from "../forms/system-button/system-button.svelte";
 import TableRenderer from "../base-table/table-renderer.svelte";
 import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
 import { PageRecitationRewardCancellationRecord as CancellationRecord } from "$lib/sdk/models/page-recitation-reward-cancellation-record.svelte";
+import { IndividualActivity } from "$lib/sdk/models/indivisual-activity.svelte";
 
 /**
  * @typedef PageRecitationRewardRecord
@@ -17,6 +18,7 @@ import { PageRecitationRewardCancellationRecord as CancellationRecord } from "$l
  * @property {String} attendanceStatus
  * @property {PageRecitationRecord[]} recitationRecords
  * @property {CancellationRecord[]} cancellationRecords
+ * @property {IndividualActivity[]} indivsualActivities
  * @property {String} indivsualActivityNotes
  * @property {String} groupActivityNotes
  * @property {int} attendancePoints
@@ -41,7 +43,10 @@ function mapStatus(status) {
 
 export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
 
-    static STUDENT_TOTAL_POINTS_DISPLAY_NAME = "النقاط الكلية" 
+    static STUDENT_TOTAL_POINTS_COLUMN_DISPLAY_NAME = "النقاط الكلية" 
+    static STUDENT_TOTAL_ATTENDANCE_POINT_COLUMN_DISPLAY_NAME = "نقاط الحضور" 
+    static STUDENT_TOTAL_MEMORIZATION_POINT_COLUMN_DISPLAY_NAME = "نقاط التسميع" 
+    static STUDENT_TOTAL_ACTIVITIES_POINT_COLUMN_DISPLAY_NAME = "نقاط النشاط"
 
     /** * @param {StudentAttendanceDaySummary} summary */
     constructor(summary) {
@@ -140,7 +145,7 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                 }
             },
             {
-                displayName: "الملاحظات",
+                displayName: 'الملاحظات',
                 render: (element) => {
                     let notes = [element.summary.groupActivityNotes, element.summary.indivsualActivityNotes];
                     notes = notes.filter(n => n != undefined && n != null && n.length >= 2);
@@ -148,13 +153,32 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                 }
             },
             {
-                displayName: "نقاط الحضور",
+                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ACTIVITIES_POINT_COLUMN_DISPLAY_NAME,
+                render: (element) => {
+                    console.log($state.snapshot(element.summary.indivsualActivities), "<=====")
+                    let points = element.summary.indivsualActivities
+                        .map(r => r.weight)
+                        .reduce((x1, x2) => x1 + x2, 0);
+
+                    return points == 0 ? '-' : points;
+                }
+            },
+            {
+                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_MEMORIZATION_POINT_COLUMN_DISPLAY_NAME,
+                render: (element) => {
+                    return element.summary.pageRecitationPointsRecords
+                        .map(record => record.points)
+                        .reduce((x1, x2) => x1 + x2, 0);
+                }
+            },
+            {
+                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ATTENDANCE_POINT_COLUMN_DISPLAY_NAME,
                 render: (element) => {
                     return element.summary.attendancePoints
                 }
             },
             {
-                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_POINTS_DISPLAY_NAME,
+                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_POINTS_COLUMN_DISPLAY_NAME,
                 render: (element) => {
                     let attendancePoints = element.summary.attendancePoints;
                     let recitationPoints = element.summary.pageRecitationPointsRecords

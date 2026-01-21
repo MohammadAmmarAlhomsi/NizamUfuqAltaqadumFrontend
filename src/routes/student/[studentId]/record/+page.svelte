@@ -7,7 +7,7 @@
     import Header from "$lib/components/layout/Header.svelte";
     import TableRenderer from "$lib/components/base-table/table-renderer.svelte";
     import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
-    
+
     import styles from "./student-record-page.module.css";
 
     let studentId = $state(page.params.studentId);
@@ -33,8 +33,27 @@
 
         <div class={styles['table-container']}>
             <div style="height: 150px;"></div>
-            <TableRenderer bind:source={sourcePage.table}/>
+            <!-- <div>
+                <h2>الملخص الكامل</h2>
+            </div> -->
+            <div>
+                <h2 style="margin-bottom: 15px; text-align: center;">أيام الحضور</h2>
+                <TableRenderer bind:source={sourcePage.table}>
+                    <tr style="background: black; color: white">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{sourcePage.totalActivitiesPoints}</td>
+                        <td>{sourcePage.totalRecitationPoints}</td>
+                        <td>{sourcePage.totalAttendancePoints}</td>
+                        <td>{sourcePage.totalPoints}</td>
+                    </tr>
+                </TableRenderer>
+            </div>
             <div style="height: 50px;"></div>
+            
         </div>
     {/if}
 </div>

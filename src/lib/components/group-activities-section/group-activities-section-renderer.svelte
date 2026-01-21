@@ -31,7 +31,7 @@
                     onkeydown={ch => {}}
                     class={styles['group-activity-cell']}>
                 <p><b>{groupActivity.name}</b></p>
-                <p>{formatArabicDate(groupActivity.happenedAt)}</p>
+                <p>{formatArabicDate(groupActivity.attendanceDay.date)}</p>
 
                 <button onclick={(e) => { e.stopPropagation(); source.handleClickDelete(groupActivity) }} class={styles['delete-button']}><img class={styles['button-icon']} src="/icons/delete-icon.png" alt=""></button>
             </div>

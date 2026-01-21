@@ -28,4 +28,9 @@
 
 .total-points-column {
     border-right: 2px dashed rgb(0, 0, 0);
+    background: rgb(240, 240, 240);
+}
+
+.start-dashed {
+    border-right: 2px dashed rgb(0, 0, 0);
 }

@@ -2,6 +2,7 @@ import { APIModel } from "../api-model.svelte";
 import { APIGetArray } from "../api-request";
 import { host } from "../host";
 import { Student } from "./student.svelte";
+import { AttendanceDay } from "./attendance-day.svelte";
 
 /** 
  * @typedef StudentActivityWeight 
@@ -24,19 +25,27 @@ export class GroupActivity extends APIModel {
     /**
      * @param {string} name 
      * @param {string} halqaId 
-     * @param {string} happenedAt 
+     * @param {string} attendanceDayId
      * @param {Array<StudentActivityWeight>} weights 
      * @param {string} notes 
      */
-    constructor(name = '', happenedAt = '', halqaId = '', weights = [], notes = '') {
+    constructor(name = '', attendanceDayId = '', halqaId = '', weights = [], notes = '') {
         super();
 
+        /** @type {string} */
         this.name = $state(name);
+
+        /** @type {string} */
         this.halqaId = $state(halqaId);
-        this.happenedAt = $state(happenedAt);
+
+        /** @type {string} */
+        this.attendanceDayId = $state(attendanceDayId);
 
         /** @type {Array<StudentActivityWeight>} */     
         this.weights = $state(weights);
+
+        /** @type {AttendanceDay} */
+        this.attendanceDay = $state(null);
 
         this.notes = $state(notes);
     }

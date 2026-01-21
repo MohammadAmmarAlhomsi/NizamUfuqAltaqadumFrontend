@@ -13,6 +13,8 @@
     let table = new BaseTable(StudentsTableElement);
 
     $effect(async () => {
+        if (halqa == null) return;
+        
         table.showOrderColumn = true;
         let students = await Student.loadHalqaStudents(halqa.id);
         table.elements = students.map(s => new StudentsTableElement(s));

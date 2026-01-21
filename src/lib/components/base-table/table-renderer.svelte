@@ -9,7 +9,7 @@
      * @typedef {import './base-table.svelte'.TableElementHeader<TElement>} TableElementHeader<TElement> */
 
     /** @type {{ source: BaseTable<any> }} */
-    let { source = $bindable(null) } = $props();
+    let { source = $bindable(null), children } = $props();
 
     /** @type {TableElementHeader<BaseTableElement>[]}*/
     let headers = $derived(
@@ -62,6 +62,7 @@
                     {/if}
                 </tr>
             {/each}
+            {@render children?.()}
         </tbody>
     </table>
 </div>

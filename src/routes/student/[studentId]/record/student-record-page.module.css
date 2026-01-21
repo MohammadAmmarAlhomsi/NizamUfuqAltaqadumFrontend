@@ -1,0 +1,31 @@
+.table-container {
+    width: 80%;
+}
+
+.container { 
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.attended {
+    color: rgb(0, 199, 17);
+}
+
+.attended-late {
+    color: rgb(0, 128, 28);
+}
+
+.absence-with-excuse {
+    color: rgb(255, 196, 0);
+}
+
+.absence-without-excuse {
+    color: rgb(255, 0, 0);
+}
+
+.total-points-column {
+    border-right: 2px dashed rgb(0, 0, 0);
+}

@@ -3,6 +3,7 @@
 </script>
 
 <div class="container">
+    <div style="width: 50px;"></div>
     {@render children?.()}
     <div style="flex: 1;"></div>
     <h1>نظام دورتنا</h1>

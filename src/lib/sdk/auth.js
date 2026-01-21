@@ -78,3 +78,14 @@ export async function getUserData() {
     return null;
   }
 }
+
+export async function validateUserAccess() {
+  let userData = await getUserData();
+  console.log(userData);
+  if (userData == null) {
+    window.location.href = `/signin`
+    return null;
+  }
+
+  return userData;
+}

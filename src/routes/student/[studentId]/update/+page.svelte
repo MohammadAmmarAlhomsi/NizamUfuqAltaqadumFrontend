@@ -8,7 +8,7 @@
     import { onMount } from 'svelte';
     import { page } from '$app/state';
     import { retrieveAllHalqat } from '$lib/sdk/halqa';
-  import { fetchPairedInstructor, fetchResponsibleHalqat } from '$lib/sdk/instructor';
+    import { fetchPairedInstructor, fetchResponsibleHalqat } from '$lib/sdk/instructor';
 
     let studentId = $state(page.params.studentId);
     let student = $state({

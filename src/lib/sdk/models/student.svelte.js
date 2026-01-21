@@ -4,6 +4,13 @@ import { host } from "../host";
 import { PageRecitationRecord } from "./page-recitation-record.svelte";
 import { QuranPage } from "./quran-page.svelte";
 
+/** 
+ * @typedef StudentAttendanceDaySummary 
+ * @property {string} attendanceStatus
+ * @property {PageRecitationRecord[]} recitationRecords
+ * @property {string} notes
+*/
+
 export class Student extends APIModel {
     
     static getAllEndPoint() { return `${host}/api/student/all` }
@@ -52,5 +59,16 @@ export class Student extends APIModel {
 
     getLastRecitationRecord = async () => {
         return await PageRecitationRecord.get(`${host}/api/page-recitation/student/${this.id}/accessible-recitation-records/last`);
+    }
+
+    /** @returns {StudentAttendanceDaySummary[]} */
+    getAttendanceDaySummaries = async () => {
+        let response = await APIGet(`${host}/api/student/${this.id}/attendance-days-summary`);
+        if (response.succeed == true) {
+            return response.data;
+        } else {
+            console.error(response.error);
+            return [];
+        }
     }
 }

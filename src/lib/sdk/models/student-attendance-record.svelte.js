@@ -2,7 +2,7 @@ import { APIModel } from "../api-model.svelte";
 import { APIGet, APIGetArray } from "../api-request";
 import { host } from "../host";
 
-/** @typedef {{'Attended', 'AttendedLate', 'AbscentWithExecuse', 'AbscentWithoutExecuse', ''} AttendanceStatus} */
+/** @typedef {'Attended', 'AttendedLate', 'AbscentWithExecuse', 'AbscentWithoutExecuse', ''} AttendanceStatus */
 
 export class StudentAttendanceRecord extends APIModel {
 

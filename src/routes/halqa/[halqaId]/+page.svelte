@@ -165,7 +165,8 @@
             <TabsContainer bind:selectedIdx={tabIndex} tabs={[ 
                 { label: 'الطلاب' }, 
                 { label: 'المتابعة' }, 
-                { label: 'الأنشطة' }]}>
+                { label: 'الأنشطة' }, 
+                { label: 'الملخص' }]}>
             </TabsContainer>
         </div>
     </Header>
@@ -178,17 +179,8 @@
         <FollowUpSectionRenderer bind:source={followUpSection}/>
     {:else if tabIndex == 2}
         <GroupActivitiesSectionRenderer bind:source={groupActivitiesSection}/>
-        <!-- <Button width='150px' onclick={handleAddGroupActivity}>إضافة نشاط جماعي</Button>
-
-        <div class="group-activities-container">
-            {#each groupsActivities as groupActivity, i}
-                <GroupActivityRecordItem 
-                    bind:halqa={halqa} 
-                    bind:activityRecord={groupsActivities[i]}
-                    onDelete={onDeleteGroupRecord}
-                    />
-            {/each}
-        </div> -->
+    {:else if tabIndex == 3}
+        
     {/if}
     
     <div style="height: 50px;"></div>

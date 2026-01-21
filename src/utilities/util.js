@@ -6,3 +6,7 @@ export function formatArabicDate(date) {
         year: 'numeric'
     }).format(new Date(date));
 }
+
+export function goToSignin() {
+    window.location.href = '/signin';
+}

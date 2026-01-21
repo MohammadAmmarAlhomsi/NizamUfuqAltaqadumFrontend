@@ -1,0 +1,70 @@
+/* Wrapper contains shadow */
+.wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+/* Shadow layer */
+.wrapper::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0; /* shadow sticks to bottom */
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    filter: blur(4px);
+    pointer-events: none; /* clicks pass through */
+    transition: opacity 0.2s ease;
+}
+
+/* Button styling */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: 1px solid black;
+    background: black;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+/* Move only the button on hover */
+.wrapper:hover .button {
+    transform: translateY(-10px);
+}
+
+/* Optional: reduce shadow opacity on hover */
+.wrapper:hover::after {
+    opacity: 0.7;
+}
+
+/* Variants */
+.filled {
+    background: black;
+    color: white;
+    border: 1px solid black;
+}
+
+.empty {
+    background: white;
+    color: black;
+    border: 2px solid black;
+}
+
+.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Optional: hover effect for empty buttons */
+.empty:hover {
+    background: black;
+    color: white;
+}

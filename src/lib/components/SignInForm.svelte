@@ -32,50 +32,95 @@
 </main>
 
 <style>
-    .error-text {
-        height: 30px;
-        margin: 10px 0px;
-        color: red;
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary: #000;
+        --border: #d1d1d1;
+        --text: #222;
+        --muted: #777;
+        --error: #d32f2f;
+        --radius: 15px;
     }
 
     main {
-        border: 1px solid black;
-        border-radius: 10px;
-        padding: 20px;
+        width: 500px;
+        margin: auto;
+        padding: 28px 25px;
+        border-radius: var(--radius);
+        background: #fff;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
         text-align: center;
+        direction: rtl;
     }
 
     h1 {
-        margin-bottom: 20px;
-    }
-
-    input {
-        outline: none;
-        border: 1px solid black;
-        border-radius: 10px;
-        padding: 5px;
-        width: 200px;
+        margin-bottom: 24px;
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text);
     }
 
     .field-container {
+        width: 100%;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+        text-align: right;
     }
 
     .field-label {
-        margin-left: 50px;
-        width: 150px;
-        text-align: start;
+        font-size: 14px;
+        color: var(--muted);
+        padding-right: 2px;
+        color: black;
+        font-weight: bold;
+    }
+
+    input {
+        width: 100%;
+        max-width: 100%;
+        padding: 12px 14px;
+        font-size: 15px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        outline: none;
+        background: #fff;
+    }
+
+    input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .error-text {
+        min-height: 22px;
+        margin: 8px 0 16px;
+        font-size: 13px;
+        color: var(--error);
+        text-align: center;
+        word-break: break-word;
     }
 
     .signin-button {
-        background: black;
-        border: none;
-        border-radius: 10px;
-        color: white;
-        padding: 10px;
         width: 100%;
+        max-width: 100%;
+        padding: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        border-radius: var(--radius);
+        border: none;
+        background: var(--primary);
+        color: #fff;
         cursor: pointer;
     }
 
+    .signin-button:active {
+        transform: scale(0.98);
+    }
 </style>

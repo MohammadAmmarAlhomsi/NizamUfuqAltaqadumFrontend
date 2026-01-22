@@ -13,9 +13,15 @@
     import { onMount } from 'svelte';
     import { verifyCreateInstructorPermission } from '$lib/sdk/instructor';
     import { retrieveAllStudents } from '$lib/sdk/student';
+    import { BaseTable } from '$lib/components/base-table/base-table.svelte';
+    import { StudentsTableElement } from '$lib/components/students-table/students-table-element.svelte';
+    import { Student } from '$lib/sdk/models/student.svelte';
+    import TableRenderer from '$lib/components/base-table/table-renderer.svelte';
     
     let selectedTabIdx = $state(0);
-    
+
+    let studentsTable = $state(new BaseTable(StudentsTableElement));
+
     const tabs = $state([ 
         { label: 'الطلاب' }, 
         { label: 'الأساتذة' },
@@ -29,6 +35,9 @@
         if (userData == null) {
             window.location.href = `/signin`
         }
+
+        let students = await Student.getAll();
+        studentsTable.elements = students.map(s => new StudentsTableElement(s));
     })
 
     async function handleCreateNew() {
@@ -53,7 +62,7 @@
 
     {#snippet renderTableElement()}
         {#if selectedTabIdx == 0}
-            <StudentsTable loadStudents={retrieveAllStudents} bind:this={tableComponentRef}/>
+            <TableRenderer source={studentsTable}/>
         {:else if selectedTabIdx == 1}
             <InstructorsTable bind:this={tableComponentRef}/>
         {:else if selectedTabIdx == 2}

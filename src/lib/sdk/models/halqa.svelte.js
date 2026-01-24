@@ -1,5 +1,8 @@
 import { APIModel } from "../api-model.svelte";
+import { APIGetArrayModel, APIGetArrayObject } from "../api-request";
 import { host } from "../host";
+
+/** @typedef {import("./student.svelte").StudentSummary} StudentSummary */
 
 export class Halqa extends APIModel {
 
@@ -15,5 +18,10 @@ export class Halqa extends APIModel {
         this.halqaDay = $state(halqaDay);
         this.instructorId = $state(instructorId);
         this.notes = $state(notes);
+    }
+
+    /** @returns {StudentSummary[]} */
+    getStudentsSummaries = async () => {
+        return await APIGetArrayObject(`${host}/api/halqa/${this.id}/student/summary/all`)
     }
 }

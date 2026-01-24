@@ -29,7 +29,7 @@ export async function APIGet(url) {
  * @param {T} instanceClass
  * @returns {Array<T>}
  */
-export async function APIGetArray(url, instanceClass) {
+export async function APIGetArrayModel(url, instanceClass) {
     let response = await APIGet(url);
     let result = [];
     if (response.succeed) {
@@ -40,6 +40,17 @@ export async function APIGetArray(url, instanceClass) {
         });
     }
     return result;
+}
+
+/** 
+ * @template TElement
+ * @param {string} url
+ * @returns {TElement[]}
+ */
+export async function APIGetArrayObject(url) {
+    let response = await APIGet(url);
+    if (!response.succeed) return [];
+    return response.data;
 }
 
 /**

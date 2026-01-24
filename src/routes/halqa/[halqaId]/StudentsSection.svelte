@@ -1,6 +1,6 @@
 <script>
     import StudentsTable from "$lib/components/tables/StudentsTable.svelte";
-    import { StudentsTableElement } from "$lib/components/students-table/students-table-element.svelte";
+    import { StudentsTableElement } from "$lib/components/tables-elements/students-table-element.svelte";
     import { BaseTable } from "$lib/components/base-table/base-table.svelte";
     
     import { Student } from "$lib/sdk/models/student.svelte";
@@ -26,8 +26,7 @@
 
 {#if halqa != null}
     <div class="vertical-center">
-        <h1 style="margin-bottom: 20px;">طلاب الحلقة</h1>
-        <div class="container">
+        <div class="width: calc(100% - 50px)">
             <!-- <StudentsTable loadStudents={retrieveHalqaStudents} /> -->
             <TableRenderer source={table}/>
         </div> 

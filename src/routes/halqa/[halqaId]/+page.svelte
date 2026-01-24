@@ -25,6 +25,7 @@
     
     import "dayjs/locale/ar";
     import FollowUpSectionRenderer from '$lib/components/forms/follow-up-section/follow-up-section-renderer.svelte';
+    import SummarySection from './SummarySection.svelte';
 
     dayjs.locale("ar");
 
@@ -99,7 +100,6 @@
     async function fetchHalqat() {
         try {
             attendancesRecords = await fetchAllHalqaAttendances(halqaId);
-            console.log($state.snapshot(attendancesRecords));
         } catch (e) {
             alert('حدث خطأ أثناء تحميل حضور الحلقة.')
             console.error(e);
@@ -180,7 +180,7 @@
     {:else if tabIndex == 2}
         <GroupActivitiesSectionRenderer bind:source={groupActivitiesSection}/>
     {:else if tabIndex == 3}
-        
+        <SummarySection halqaId={halqa?.id} />
     {/if}
     
     <div style="height: 50px;"></div>

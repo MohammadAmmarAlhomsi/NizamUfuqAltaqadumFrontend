@@ -42,7 +42,10 @@
     
         <tbody>
             {#each source.elements as element, idx}
-                <tr class={source.getRowStyleClass(element)}>
+                <tr 
+                    onclick={() => { source.handleClickRow(element, idx) } }
+                    class={[source.getRowStyleClass(element), source.isRowClickable ? styles['selectable-row'] : null]}
+                    >
                     <td>{idx + 1}.</td>
                     {#each headers as header}
                         <td class={source.getColumnStyleClass(header, element)}>

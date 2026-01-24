@@ -1,5 +1,5 @@
 import { APIModel } from "../api-model.svelte";
-import { APIGet, APIGetArray, APIPost } from "../api-request";
+import { APIGet, APIGetArrayModel, APIPost } from "../api-request";
 import { host } from "../host";
 
 export class HalqaAttendanceSummary extends APIModel {
@@ -30,7 +30,7 @@ export class HalqaAttendanceRecord extends APIModel {
      * @returns {Array<HalqaAttendanceRecord>}
      */
     static async getHalqaAttendanceRecords(halqaId) {
-        return await APIGetArray(this.halqaRecordsEndPoint(halqaId), HalqaAttendanceRecord);
+        return await APIGetArrayModel(this.halqaRecordsEndPoint(halqaId), HalqaAttendanceRecord);
     }
 
     static async includeHalqaStudentMissingRecords(halqaId) {
@@ -42,7 +42,7 @@ export class HalqaAttendanceRecord extends APIModel {
      * @returns {HalqaAttendanceSummary[]}
     */
     static async getHalqaAttendanceSummaries(halqaId) {
-        return await APIGetArray(`${host}/api/halqa-attendance/${halqaId}/attendance/summary/all`, HalqaAttendanceSummary);
+        return await APIGetArrayModel(`${host}/api/halqa-attendance/${halqaId}/attendance/summary/all`, HalqaAttendanceSummary);
     }
 
     /**

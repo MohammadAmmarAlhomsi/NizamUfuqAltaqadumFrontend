@@ -1,5 +1,5 @@
 import { APIModel } from "../api-model.svelte";
-import { APIGet, APIGetArray } from "../api-request";
+import { APIGet, APIGetArrayModel } from "../api-request";
 import { host } from "../host";
 import { PageRecitationRecord } from "./page-recitation-record.svelte";
 import { QuranPage } from "./quran-page.svelte";
@@ -10,6 +10,38 @@ import { QuranPage } from "./quran-page.svelte";
  * @property {PageRecitationRecord[]} recitationRecords
  * @property {string} notes
 */
+
+/**
+ * @typedef {Object} StudentAttendanceSummary
+ * @property {number} attendanceCount
+ * @property {number} lateAttendanceCount
+ * @property {number} abscentWithExecuseCount
+ * @property {number} abscentWithoutExecuseCount
+ * @property {number} totalPoints
+ */
+
+/**
+ * @typedef {Object} StudentMemorizationSummary
+ * @property {number} assessedAjzaCount
+ * @property {number} recitedPagesCount
+ * @property {number} totalJuzuAssessmentPoints
+ * @property {number} totalRecitationPagePoints
+ */
+
+/**
+ * @typedef {Object} StudentActivitySummary
+ * @property {number} totalPoints
+ */
+
+/**
+ * @typedef {Object} StudentSummary
+ * @property {Student} student
+ * @property {StudentAttendanceSummary} studentAttendanceSummary
+ * @property {StudentMemorizationSummary} studentMemorizationSummary
+ * @property {StudentActivitySummary} studentActivitySummary
+ * @property {number} totalPoints
+ */
+
 
 export class Student extends APIModel {
     
@@ -24,7 +56,7 @@ export class Student extends APIModel {
      * @returns {Array<Student>}
      */
     static async loadHalqaStudents(halqaId) {
-        return await APIGetArray(this.getHalqaStudentsEndPoint(halqaId), Student);
+        return await APIGetArrayModel(this.getHalqaStudentsEndPoint(halqaId), Student);
     }
 
     constructor(fullName = '',
@@ -54,7 +86,7 @@ export class Student extends APIModel {
     }
 
     getAccessibleQuranPages = async () => {
-        return await APIGetArray(`${host}/api/student/${this.id}/quran-page/accessible/all`, QuranPage)
+        return await APIGetArrayModel(`${host}/api/student/${this.id}/quran-page/accessible/all`, QuranPage)
     }
 
     getLastRecitationRecord = async () => {
@@ -70,5 +102,12 @@ export class Student extends APIModel {
             console.error(response.error);
             return [];
         }
+    }
+
+    /** @returns {StudentSummary} */
+    getSummary = async () => {
+        let response = await APIGet(`${host}/api/student/${this.id}/summary`);
+        if (!response.succeed) return null;
+        return response.data;
     }
 }

@@ -1,5 +1,5 @@
 import { APIModel } from "../api-model.svelte";
-import { APIGetArray } from "../api-request";
+import { APIGetArrayModel } from "../api-request";
 import { host } from "../host";
 import { Student } from "./student.svelte";
 import { AttendanceDay } from "./attendance-day.svelte";
@@ -19,7 +19,7 @@ export class GroupActivity extends APIModel {
 
     /** @param {String} halqaId */
     static async getHalqaGroupActivities(halqaId) {
-        return await APIGetArray(`${host}/api/group-activity/${halqaId}/all`, GroupActivity);
+        return await APIGetArrayModel(`${host}/api/group-activity/${halqaId}/all`, GroupActivity);
     }
 
     /**

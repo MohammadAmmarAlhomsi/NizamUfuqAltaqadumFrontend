@@ -1,5 +1,5 @@
 import { APIModel } from "../api-model.svelte";
-import { APIGet, APIGetArray } from "../api-request";
+import { APIGet, APIGetArrayModel } from "../api-request";
 import { host } from "../host";
 
 export class PageRecitationRewardCancellationRecord extends APIModel {
@@ -14,7 +14,7 @@ export class PageRecitationRewardCancellationRecord extends APIModel {
      * @param {string} studentId 
      */
     static async getStudentAccessibleRecords(studentId) {
-        return await APIGetArray(`${host}/api/page-recitation-reward-cancellation/student/${studentId}/reward-cancellation-record/accessible/all`, PageRecitationRewardCancellationRecord);
+        return await APIGetArrayModel(`${host}/api/page-recitation-reward-cancellation/student/${studentId}/reward-cancellation-record/accessible/all`, PageRecitationRewardCancellationRecord);
     }
 
     constructor(pageRecitationRecordId = '') {

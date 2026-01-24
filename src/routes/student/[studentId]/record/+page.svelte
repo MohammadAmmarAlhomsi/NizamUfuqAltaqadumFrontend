@@ -7,6 +7,7 @@
     import Header from "$lib/components/layout/Header.svelte";
     import TableRenderer from "$lib/components/base-table/table-renderer.svelte";
     import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
+    import StudentsSummariesTableRenderer from "$lib/components/students-summaries-table/students-summaries-table-renderer.svelte";
 
     import styles from "./student-record-page.module.css";
 
@@ -31,14 +32,24 @@
 
         <div style="height: 150px;"></div>
 
+        
+
         <div class={styles['table-container']}>
             <div style="height: 150px;"></div>
             <!-- <div>
                 <h2>الملخص الكامل</h2>
             </div> -->
+
             <div>
-                <h2 style="margin-bottom: 15px; text-align: center;">أيام الحضور</h2>
-                <TableRenderer bind:source={sourcePage.table}>
+                <h2 style="margin-bottom: 15px; text-align: center;">الملخص العام</h2>
+                <StudentsSummariesTableRenderer source={sourcePage.studentSummariesTable}/>
+            </div>
+
+            <div style="height: 50px;"></div>
+
+            <div>
+                <h2 style="margin-bottom: 15px; text-align: center;">كشف أيام الحضور</h2>
+                <TableRenderer bind:source={sourcePage.attendanceSummaryTable}>
                     <tr style="background: black; color: white">
                         <td></td>
                         <td></td>

@@ -1,8 +1,19 @@
 /* =========================
+   Container
+========================= */
+.container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* =========================
    Root table
 ========================= */
 .table {
     width: 100%;
+    min-width: 900px;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.95rem;
@@ -35,6 +46,7 @@
     border-bottom: 1px solid #e5e5e5;
     user-select: none;
 }
+
 
 /* Section headers with subtle gray shades */
 .table thead th[colspan="5"] {

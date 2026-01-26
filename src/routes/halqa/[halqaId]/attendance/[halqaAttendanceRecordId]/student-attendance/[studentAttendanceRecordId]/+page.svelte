@@ -36,39 +36,117 @@
 <main>
     <Header>
         {#if halqaAttendanceRecord != null}
-            <h1>{dayjs(halqaAttendanceRecord.attendanceDay.date).format('dddd DD/MM/YYYY')}</h1>
-            <div style="flex: 1;"></div>
-            <div style="position: absolute; left: 50%; transform: translate(-50%, 0);">
-                <h1>حضور {studentAttendanceRecord?.student.fullName}</h1>
+            <div class="attendance-header">
+                <div class="attendance-title">
+                    <span class="eyebrow">حضور الطالب</span>
+                    <h1>{studentAttendanceRecord?.student.fullName}</h1>
+                </div>
+                <div class="attendance-subtitle">
+                    <span>{dayjs(halqaAttendanceRecord.attendanceDay.date).format('dddd DD/MM/YYYY')}</span>
+                </div>
             </div>
         {/if}
     </Header>
 
+    <div class="header-spacer"></div>
+
     <div class="container">
-        <div style="height: 100px;"></div>
-        <StudentAttendanceFormRenderer bind:studentAttendanceRecord={studentAttendanceRecord}/>
+        <div class="form-scroll">
+            <StudentAttendanceFormRenderer bind:studentAttendanceRecord={studentAttendanceRecord}/>
+        </div>
     </div>
 </main>
 
 <style>
-    h1 {
-        margin-inline-start: 50px;
-    }
-
     .container {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         flex-direction: column;
         width: 100%;
-        height: 100%;
+        height: 100vh;
+        padding: 0 16px 24px;
+        box-sizing: border-box;
+    }
+
+    .form-scroll {
+        width: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     main {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        height: 100vh;
+        align-items: stretch;
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-        position: relative;
+    .attendance-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 12px 24px;
+        width: 100%;
+        flex-wrap: wrap;
+        box-sizing: border-box;
+    }
+
+    .attendance-title {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 220px;
+        max-width: 100%;
+    }
+
+    .attendance-title h1 {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+    .attendance-subtitle {
+        font-size: 1rem;
+        color: #333;
+        padding: 6px 14px;
+        border: 1px solid #ddd;
+        border-radius: 999px;
+        background: #fafafa;
+    }
+
+    .eyebrow {
+        font-size: 0.85rem;
+        color: #666;
+        letter-spacing: 0.02em;
+    }
+
+    .header-spacer {
+        height: 140px;
+        width: 100%;
+    }
+
+    @media (max-width: 900px) {
+        .attendance-header {
+            justify-content: center;
+            padding: 12px 16px;
+        }
+
+        .attendance-title {
+            text-align: center;
+            align-items: center;
+        }
+
+        .attendance-subtitle {
+            width: 100%;
+            text-align: center;
+        }
+
+        .header-spacer {
+            height: 260px;
+        }
     }
 </style>

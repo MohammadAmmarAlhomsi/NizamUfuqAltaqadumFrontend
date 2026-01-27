@@ -25,10 +25,33 @@
 </script>
 
 {#if halqa != null}
-    <div class="vertical-center">
-        <div class="width: calc(100% - 50px)">
+    <div class="students-section">
+        <div class="table-wrapper">
             <!-- <StudentsTable loadStudents={retrieveHalqaStudents} /> -->
             <TableRenderer source={table}/>
         </div> 
     </div>
 {/if}
+
+<style>
+    .students-section {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        max-width: 100vw;
+        padding: 0 16px;
+        box-sizing: border-box;
+        margin-top: 16px;
+    }
+
+    @media (max-width: 900px) {
+        .table-wrapper {
+            margin-top: 48px;
+        }
+    }
+</style>

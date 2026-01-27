@@ -40,17 +40,21 @@
         border: 2px solid black;
         border-radius: 15px;
         padding: 0px 10px;
+        flex-wrap: wrap;
+        gap: 6px;
+        max-width: 100%;
     }
 
     .tab {
         outline: none;
         border: none;
-        padding: 10px;
+        padding: 8px 12px;
         /* background: rgb(204, 204, 204); */
         background: none;
         opacity: 50%;
         cursor: pointer;
         font-weight: bold;
+        white-space: nowrap;
     }
 
     .tab-first {

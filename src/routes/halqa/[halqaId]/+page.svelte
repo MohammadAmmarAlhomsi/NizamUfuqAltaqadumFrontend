@@ -160,18 +160,25 @@
 
 <main>
     <Header>
-        <h1 style="margin-inline-start: 50px; font-size: 2em;">{halqa?.name}</h1>
-        <div style="position: absolute; right: 50%; transform: translate(50%, 0)">
-            <TabsContainer bind:selectedIdx={tabIndex} tabs={[ 
-                { label: 'الطلاب' }, 
-                { label: 'المتابعة' }, 
-                { label: 'الأنشطة' }, 
-                { label: 'الملخص' }]}>
-            </TabsContainer>
+        <div class="halqa-header">
+            <div class="halqa-title">
+                <span class="eyebrow">حلقة الأستاذ</span>
+                <h1>{halqa?.name}</h1>
+            </div>
+            <div class="halqa-tabs">
+                <div class="tabs-shell">
+                    <TabsContainer bind:selectedIdx={tabIndex} tabs={[ 
+                        { label: 'الطلاب' }, 
+                        { label: 'المتابعة' }, 
+                        { label: 'الأنشطة' }, 
+                        { label: 'الملخص' }]}>
+                    </TabsContainer>
+                </div>
+            </div>
         </div>
     </Header>
 
-    <div style="height: 110px;"></div>
+    <div class="header-spacer"></div>
 
     {#if tabIndex == 0}
         <StudentsSection bind:halqa={halqa}/>
@@ -232,7 +239,9 @@
 
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .overlay {
@@ -248,5 +257,96 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .halqa-header {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        padding: 12px 24px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .halqa-title {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 180px;
+        max-width: 100%;
+    }
+
+    .halqa-title h1 {
+        margin: 0;
+        font-size: 1.7rem;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+    .eyebrow {
+        font-size: 0.85rem;
+        color: #666;
+        letter-spacing: 0.02em;
+    }
+
+    .halqa-tabs {
+        flex: 1 1 420px;
+        display: flex;
+        justify-content: center;
+        min-width: 240px;
+    }
+
+    .tabs-shell {
+        display: flex;
+        align-items: center;
+        padding: 6px 12px;
+        border: 1px solid #111;
+        border-radius: 999px;
+        background: #fff;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .header-spacer {
+        height: 140px;
+        width: 100%;
+    }
+
+    @media (max-width: 900px) {
+        .halqa-header {
+            justify-content: center;
+            padding: 12px 16px;
+        }
+
+        .halqa-title {
+            align-items: center;
+            text-align: center;
+        }
+
+        .halqa-tabs {
+            order: 3;
+            width: 100%;
+        }
+
+        .tabs-shell {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .header-spacer {
+            height: 260px;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .halqa-header {
+            gap: 12px;
+        }
+
+        .halqa-title h1 {
+            font-size: 1.35rem;
+        }
     }
 </style>

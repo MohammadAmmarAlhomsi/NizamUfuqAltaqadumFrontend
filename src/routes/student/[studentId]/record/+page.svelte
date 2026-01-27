@@ -32,8 +32,6 @@
 
         <div style="height: 150px;"></div>
 
-        
-
         <div class={styles['table-container']}>
             <div style="height: 150px;"></div>
             <!-- <div>
@@ -43,6 +41,13 @@
             <div>
                 <h2 style="margin-bottom: 15px; text-align: center;">الملخص العام</h2>
                 <StudentsSummariesTableRenderer source={sourcePage.studentSummariesTable}/>
+            </div>
+
+            <div style="height: 50px;"></div>
+
+            <div>
+                <h2 style="margin-bottom: 15px; text-align: center;">الإختبارات</h2>
+                <TableRenderer bind:source={sourcePage.juzuAssessmentTable}/>
             </div>
 
             <div style="height: 50px;"></div>

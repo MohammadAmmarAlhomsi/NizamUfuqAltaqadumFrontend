@@ -3,6 +3,7 @@ import { APIGet, APIGetArrayModel } from "../api-request";
 import { host } from "../host";
 import { PageRecitationRecord } from "./page-recitation-record.svelte";
 import { QuranPage } from "./quran-page.svelte";
+import { JuzuAssessment } from "./juzu-assessment.svelte";
 
 /** 
  * @typedef StudentAttendanceDaySummary 
@@ -109,5 +110,10 @@ export class Student extends APIModel {
         let response = await APIGet(`${host}/api/student/${this.id}/summary`);
         if (!response.succeed) return null;
         return response.data;
+    }
+
+
+    getAssessedAjza = async () => {
+        return await APIGetArrayModel(`${host}/api/juzu-assessment/student/${this.id}/all`, JuzuAssessment)
     }
 }

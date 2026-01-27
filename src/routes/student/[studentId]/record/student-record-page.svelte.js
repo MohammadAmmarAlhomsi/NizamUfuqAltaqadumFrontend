@@ -5,6 +5,7 @@ import { goToSignin } from "../../../../utilities/util";
 import { BaseTable } from "$lib/components/base-table/base-table.svelte";
 import { StudentAttendanceDaySummaryTableElement } from "$lib/components/student-attendance-summary-table/student-attendance-summary-table.svelte";
 import { StudentsSummariesTable } from "$lib/components/students-summaries-table/students-summaries-table.svelte";
+import { JuzuAssessmentTableElement } from "$lib/components/tables-elements/juzu-assessment-table-element.svelte";
 
 import styles from './student-record-page.module.css'
 
@@ -28,6 +29,9 @@ export class StudentRecordPage {
         /** @type {int} */ this.totalRecitationPoints = $state(0);
         /** @type {int} */ this.totalAttendancePoints = $state(0);
         /** @type {int} */ this.totalActivitiesPoints = $state(0);
+
+        /** @type {BaseTable<JuzuAssessmentTableElement>} */
+        this.juzuAssessmentTable = $state(null);
     }
 
     onMount = async () => {
@@ -36,6 +40,10 @@ export class StudentRecordPage {
 
         let studentSummary = await this.student.getSummary();
         this.studentSummariesTable.summaries = [studentSummary];
+
+        this.juzuAssessmentTable = new BaseTable(JuzuAssessmentTableElement);
+        let juzuAssessmentRecords = await this.student.getAssessedAjza();
+        this.juzuAssessmentTable.elements = juzuAssessmentRecords.map(r => new JuzuAssessmentTableElement(r));
 
         await this.setupAttendanceDaySummaryTable();
     }

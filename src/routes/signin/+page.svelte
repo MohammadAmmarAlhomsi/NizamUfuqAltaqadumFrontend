@@ -5,10 +5,11 @@
     import { authorizeAccessToken, signIn } from '$lib/sdk/auth';
 
     let errorText = $state('');
+    let isLoading = $state(false);
 
     async function handleSubmit({ email, password }) {
-        try 
-        {
+        try {
+            isLoading = true;
             let token = await signIn(email, password);
             console.log(await authorizeAccessToken());
             
@@ -24,16 +25,21 @@
             }
             console.log(token.role.name);
         }
-        catch (e)
-        {
+        catch (e) {
             errorText = e.message;
+        } finally {
+            isLoading = false;
         }
     }
 </script>
 
 <main>
     <Header />
-    <SignInForm bind:errorText={errorText} onsubmit={handleSubmit}/>
+    {#if isLoading}
+        <div class="loading">جارٍ تسجيل الدخول...</div>
+    {:else}
+        <SignInForm bind:errorText={errorText} onsubmit={handleSubmit}/>
+    {/if}
 </main>
 
 <style>
@@ -43,5 +49,10 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
+    }
+
+    .loading {
+        font-weight: 600;
+        color: #555;
     }
 </style>

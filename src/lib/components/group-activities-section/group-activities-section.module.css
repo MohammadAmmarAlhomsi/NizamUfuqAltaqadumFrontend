@@ -16,6 +16,18 @@
     transform: scale(1.05);
 }
 
+.action-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.action-row :global(button) {
+    width: fit-content;
+}
+
 .group-activity-container {
     display: grid;
     width: 900px;

@@ -18,23 +18,46 @@
     import { DirectorPage } from './director-page.svelte';  
 
     let source = $state(new DirectorPage());
+    let mainEl;
     
     onMount(async () => {
         await source.onMount();
+        const headerEl = document.querySelector('.app-header');
+        if (!headerEl || !mainEl) return;
+
+        const updateHeaderHeight = () => {
+            const height = headerEl.getBoundingClientRect().height;
+            mainEl.style.setProperty('--header-height', `${height}px`);
+        };
+
+        updateHeaderHeight();
+        const observer = new ResizeObserver(updateHeaderHeight);
+        observer.observe(headerEl);
+        window.addEventListener('resize', updateHeaderHeight);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('resize', updateHeaderHeight);
+        };
     })
 </script>
 
-<main>
+<main bind:this={mainEl} class="director-page">
     <Header>
-        <div style="flex: 1;"></div>         
-        <div class="menues-header-container">
-            <div style="width: 350px;"></div>
-            <TabContainer bind:selectedIdx={source.selectedTabIdx} tabs={source.tabs}/>
-            <div style="width: 50px;"></div> 
-            <div style="width: 300px;">      
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <span class="eyebrow">لوحة التحكم</span>
+                <h1>لوحة المدير</h1>
+            </div>
+            <div class="dashboard-tabs">
+                <div class="tabs-shell">
+                    <TabContainer bind:selectedIdx={source.selectedTabIdx} tabs={source.tabs}/>
+                </div>
+            </div>
+            <div class="dashboard-action">
                 <Button onclick={source.handleCreateNew}>➕ إضافة جديد</Button>
-            </div>                           
-        </div>                                
+            </div>
+        </div>
     </Header>
 
     <div class="container">
@@ -50,19 +73,95 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        
-        padding-top: 130px;
+        padding: calc(var(--header-height, 0px) + var(--header-gap, 24px)) 16px 24px;
+        box-sizing: border-box;
     }
 
-    .menues-header-container {
+    .dashboard-header {
         display: flex;
-        flex-direction: row;
         align-items: center;
-        justify-content: center;
+        gap: 24px;
+        padding: 12px 24px;
+        width: 100%;
+        box-sizing: border-box;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
 
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%, 0);
+    .dashboard-title {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 200px;
+        max-width: 100%;
+    }
+
+    .dashboard-title h1 {
+        margin: 0;
+        font-size: 1.7rem;
+        font-weight: 700;
+    }
+
+    .eyebrow {
+        font-size: 0.85rem;
+        color: #666;
+        letter-spacing: 0.02em;
+    }
+
+    .dashboard-tabs {
+        flex: 1 1 420px;
+        display: flex;
+        justify-content: center;
+        min-width: 240px;
+    }
+
+    .tabs-shell {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border: 1px solid #111;
+        border-radius: 999px;
+        background: #fff;
+        max-width: 100%;
+        width: fit-content;
+    }
+
+    .dashboard-action {
+        display: flex;
+        justify-content: flex-end;
+        min-width: 180px;
+    }
+
+    @media (max-width: 900px) {
+        .director-page {
+            --header-gap: 40px;
+        }
+
+        .dashboard-header {
+            justify-content: center;
+            padding: 12px 16px;
+        }
+
+        .dashboard-title {
+            align-items: center;
+            text-align: center;
+        }
+
+        .dashboard-tabs {
+            order: 3;
+            width: 100%;
+        }
+
+        .dashboard-action {
+            order: 2;
+            width: 100%;
+            justify-content: center;
+        }
+
+    }
+
+    .director-page {
+        --header-gap: 24px;
     }
 
     main {

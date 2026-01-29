@@ -2,7 +2,7 @@
     let { children } = $props();
 </script>
 
-<div class="container">
+<div class="container app-header">
     <div class="leading-spacer"></div>
     <div class="header-content">
         {@render children?.()}

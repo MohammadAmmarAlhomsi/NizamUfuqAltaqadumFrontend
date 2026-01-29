@@ -25,11 +25,16 @@
 
     /** @type {StudentAttendanceRecord}*/
     let studentAttendanceRecord = $state(null);
+    let isLoading = $state(true);
 
     onMount(async () => {
-        halqa = await Halqa.getById(page.params.halqaId);
-        halqaAttendanceRecord = await HalqaAttendanceRecord.getById(page.params.halqaAttendanceRecordId);
-        studentAttendanceRecord = await StudentAttendanceRecord.getById(page.params.studentAttendanceRecordId);
+        try {
+            halqa = await Halqa.getById(page.params.halqaId);
+            halqaAttendanceRecord = await HalqaAttendanceRecord.getById(page.params.halqaAttendanceRecordId);
+            studentAttendanceRecord = await StudentAttendanceRecord.getById(page.params.studentAttendanceRecordId);
+        } finally {
+            isLoading = false;
+        }
     });
 </script>
 
@@ -51,9 +56,13 @@
     <div class="header-spacer"></div>
 
     <div class="container">
-        <div class="form-scroll">
-            <StudentAttendanceFormRenderer bind:studentAttendanceRecord={studentAttendanceRecord}/>
-        </div>
+        {#if isLoading}
+            <div class="loading">جارٍ تحميل بيانات الطالب...</div>
+        {:else}
+            <div class="form-scroll">
+                <StudentAttendanceFormRenderer bind:studentAttendanceRecord={studentAttendanceRecord}/>
+            </div>
+        {/if}
     </div>
 </main>
 
@@ -127,6 +136,14 @@
     .header-spacer {
         height: 140px;
         width: 100%;
+    }
+
+    .loading {
+        width: 100%;
+        text-align: center;
+        padding: 24px 0;
+        color: #555;
+        font-weight: 600;
     }
 
     @media (max-width: 900px) {

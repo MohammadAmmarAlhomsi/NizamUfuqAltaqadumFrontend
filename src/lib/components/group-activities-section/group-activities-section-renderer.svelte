@@ -18,7 +18,9 @@
 </script>
 
 {#if source != null}
-    <Button onclick={source.handleClickAddNew}>إضافة نشاط جديد</Button>
+    <div class={styles["action-row"]}>
+        <Button onclick={source.handleClickAddNew}>إضافة نشاط جديد</Button>
+    </div>
 
     <div style="height: 30px;"></div>
     

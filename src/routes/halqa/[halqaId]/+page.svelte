@@ -44,12 +44,33 @@
 
     let initialTabIdx = page.url.searchParams.get('tabIdx')
     let hasInitialized = false;
+    let mainEl;
 
     onMount(async () => {
         const param = new URL(window.location.href).searchParams.get('tabIdx');
         tabIndex = param !== null ? Number(param) : 0;
         
         await followUpSection.onMount();
+    });
+
+    onMount(() => {
+        const headerEl = document.querySelector('.app-header');
+        if (!headerEl || !mainEl) return;
+
+        const updateHeaderHeight = () => {
+            const height = headerEl.getBoundingClientRect().height;
+            mainEl.style.setProperty('--header-height', `${height}px`);
+        };
+
+        updateHeaderHeight();
+        const observer = new ResizeObserver(updateHeaderHeight);
+        observer.observe(headerEl);
+        window.addEventListener('resize', updateHeaderHeight);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('resize', updateHeaderHeight);
+        };
     });
 
     $effect(() => {
@@ -158,7 +179,7 @@
     let groupActivitiesSection = $state(new GroupActivitiesSection(halqaId));
 </script>
 
-<main>
+<main bind:this={mainEl} class="halqa-page">
     <Header>
         <div class="halqa-header">
             <div class="halqa-title">
@@ -178,17 +199,17 @@
         </div>
     </Header>
 
-    <div class="header-spacer"></div>
-
-    {#if tabIndex == 0}
-        <StudentsSection bind:halqa={halqa}/>
-    {:else if tabIndex == 1}
-        <FollowUpSectionRenderer bind:source={followUpSection}/>
-    {:else if tabIndex == 2}
-        <GroupActivitiesSectionRenderer bind:source={groupActivitiesSection}/>
-    {:else if tabIndex == 3}
-        <SummarySection halqaId={halqa?.id} />
-    {/if}
+    <div class="section-container">
+        {#if tabIndex == 0}
+            <StudentsSection bind:halqa={halqa}/>
+        {:else if tabIndex == 1}
+            <FollowUpSectionRenderer bind:source={followUpSection}/>
+        {:else if tabIndex == 2}
+            <GroupActivitiesSectionRenderer bind:source={groupActivitiesSection}/>
+        {:else if tabIndex == 3}
+            <SummarySection halqaId={halqa?.id} />
+        {/if}
+    </div>
     
     <div style="height: 50px;"></div>
 
@@ -299,22 +320,27 @@
     }
 
     .tabs-shell {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         padding: 6px 12px;
         border: 1px solid #111;
         border-radius: 999px;
         background: #fff;
         max-width: 100%;
-        width: 100%;
+        width: fit-content;
     }
 
-    .header-spacer {
-        height: 140px;
+    .section-container {
         width: 100%;
+        box-sizing: border-box;
+        padding-top: calc(var(--header-height, 0px) + var(--header-gap, 24px));
     }
 
     @media (max-width: 900px) {
+        .halqa-page {
+            --header-gap: 40px;
+        }
+
         .halqa-header {
             justify-content: center;
             padding: 12px 16px;
@@ -335,9 +361,6 @@
             justify-content: center;
         }
 
-        .header-spacer {
-            height: 260px;
-        }
     }
 
     @media (max-width: 520px) {
@@ -348,5 +371,9 @@
         .halqa-title h1 {
             font-size: 1.35rem;
         }
+    }
+
+    .halqa-page {
+        --header-gap: 24px;
     }
 </style>

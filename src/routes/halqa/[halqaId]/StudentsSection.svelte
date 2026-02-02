@@ -17,6 +17,10 @@
         
         let students = await Student.loadHalqaStudents(halqa.id);
         table.elements = students.map(s => new StudentsTableElement(s));
+        table.isRowClickable = true;
+        table.addEventListener('clickRow', e => {
+            window.location.href = `/student/${e.detail.element.student.id}/record`
+        });
     })
 
     async function retrieveHalqaStudents() {

@@ -51,7 +51,7 @@ export class BaseTable extends EventTarget {
         /** @type {(element: TElement) => {  }} */
         this.getRowStyleClass = (element) => { return null; };
 
-        /** @type {(header: TableElementHeader<TElement>, element: TElement) => {  }} */
+        /** @type {(header: TableElementHeader<TElement>, element: TElement) => []} */
         this.getColumnStyleClass = (header, element) => { return null; };
 
         /** @type {boolean} */
@@ -69,8 +69,8 @@ export class BaseTable extends EventTarget {
     }
 
     /** 
-     * @type {TElement} 
-     * @type {int}
+     * @param {TElement} element
+     * @param {int} idx
     */
     handleClickRow = (element, idx) => {
         if (this.isRowClickable) {

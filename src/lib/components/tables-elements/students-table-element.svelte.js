@@ -65,12 +65,5 @@ export class StudentsTableElement extends BaseTableElement {
                 window.location.href = `/student/${element.student.id}/update`
             }
         },
-        {
-            getLabel: (element) => 'السجل',
-            onclick: (element) => {
-                window.location.href = `/student/${element.student.id}/record`
-
-            }
-        }
     ]
 }

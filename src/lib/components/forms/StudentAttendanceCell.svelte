@@ -41,8 +41,11 @@
   ];
 
   function selectStatus(value) {
-      studentAttendanceRecord.status = value;
-      onchange(value);
+    if (value == studentAttendanceRecord.status) {
+        value = null;
+    } 
+    studentAttendanceRecord.status = value;
+    onchange(value);
   }
 </script>
 

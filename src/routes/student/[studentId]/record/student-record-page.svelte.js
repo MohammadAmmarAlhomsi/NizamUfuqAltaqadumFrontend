@@ -6,6 +6,7 @@ import { BaseTable } from "$lib/components/base-table/base-table.svelte";
 import { StudentAttendanceDaySummaryTableElement } from "$lib/components/student-attendance-summary-table/student-attendance-summary-table.svelte";
 import { StudentsSummariesTable } from "$lib/components/students-summaries-table/students-summaries-table.svelte";
 import { JuzuAssessmentTableElement } from "$lib/components/tables-elements/juzu-assessment-table-element.svelte";
+import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
 
 import styles from './student-record-page.module.css'
 
@@ -61,18 +62,30 @@ export class StudentRecordPage {
             return null;
         }
         this.attendanceSummaryTable.getColumnStyleClass = (header, element) => {
+            let outputStyles = [];
+
             if (header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_POINTS_COLUMN_DISPLAY_NAME) {
-                return styles['total-points-column']
+                outputStyles.push(styles['total-points-column']);
             } else if (
                 header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_MEMORIZATION_POINT_COLUMN_DISPLAY_NAME ||
                 header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ATTENDANCE_POINT_COLUMN_DISPLAY_NAME ||
                 header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ACTIVITIES_POINT_COLUMN_DISPLAY_NAME) {
-                return styles['start-dashed'];
+                outputStyles.push(styles['start-dashed']);
             }
-            return null;
+
+            if (header.displayName == StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_POINTS_COLUMN_DISPLAY_NAME) {
+                outputStyles.push(styles['end-dashed']);
+            }
+            return outputStyles;
         }
 
         this.attendanceSummaryTable.elements = records.map(r => new StudentAttendanceDaySummaryTableElement(r));
+        this.attendanceSummaryTable.isRowClickable = true;
+        this.attendanceSummaryTable.addEventListener('clickRow', e => {
+            /** @type {StudentAttendanceRecord} */ let attendanceRecord = e.detail.element.summary.attendanceRecord;
+            console.log($state.snapshot(attendanceRecord));
+            // window.location.href = `/halqa/${this.student.halqaId}/attendance/${attendanceRecord.halqaAttendanceRecordId}/student-attendance/${attendanceRecord.id}`;
+        });
 
         this.totalAttendancePoints = this.attendanceSummaryTable.elements
             .map(element => element.summary.attendancePoints)

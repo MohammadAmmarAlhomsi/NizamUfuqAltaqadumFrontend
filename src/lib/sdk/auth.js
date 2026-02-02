@@ -31,6 +31,19 @@ export async function signIn(email, password) {
   }
 }
 
+export function redirectToHomePage() {
+  let token = loadAccessToken();
+  console.log(token);
+
+  if (token.role.name.toLowerCase() == 'instructor') {
+      window.location.href = `/instructor`;
+  } else if (token.role.name.toLowerCase() == 'admin') {
+      window.location.href = `/director-dashboard`;
+  } else if (token.role.name.toLowerCase() == 'examiner') {
+      window.location.href = `/examiner`
+  }
+}
+
 export function loadAccessToken() {  
     return JSON.parse(localStorage.getItem('accessToken'))
 }

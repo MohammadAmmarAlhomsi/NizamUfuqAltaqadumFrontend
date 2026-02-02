@@ -8,11 +8,15 @@ export class StudentsSection extends TableSection {
 
     constructor() {
         super(StudentsTableElement);
+        this.table.isRowClickable = true;
     }
 
     loadElements = async () => {
         let students = await Student.getAll();
         this.table.elements = students.map(s => new StudentsTableElement(s));
+        this.table.addEventListener('clickRow', (e) => {
+            window.location.href = `/student/${e.detail.element.student.id}/record`      
+        })
     }
 
     createNew = async () => {

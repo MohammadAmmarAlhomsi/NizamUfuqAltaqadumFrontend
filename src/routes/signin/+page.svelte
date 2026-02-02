@@ -2,7 +2,7 @@
     import Header from '$lib/components/layout/Header.svelte';
     import SignInForm from '$lib/components/SignInForm.svelte';
 
-    import { authorizeAccessToken, signIn } from '$lib/sdk/auth';
+    import { authorizeAccessToken, redirectToHomePage, signIn } from '$lib/sdk/auth';
 
     let errorText = $state('');
     let isLoading = $state(false);
@@ -11,18 +11,9 @@
         try {
             isLoading = true;
             let token = await signIn(email, password);
-            console.log(await authorizeAccessToken());
-            
-            let a = "";
-            a.toLowerCase()
              
-            if (token.role.name.toLowerCase() == 'instructor') {
-                window.location.href = `/instructor`;
-            } else if (token.role.name.toLowerCase() == 'admin') {
-                window.location.href = `/director-dashboard`;
-            } else if (token.role.name.toLowerCase() == 'examiner') {
-                window.location.href = `/examiner`
-            }
+            redirectToHomePage();
+
             console.log(token.role.name);
         }
         catch (e) {

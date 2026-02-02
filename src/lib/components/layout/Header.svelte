@@ -1,5 +1,11 @@
 <script>
+  import { redirectToHomePage } from "$lib/sdk/auth";
+
     let { children } = $props();
+
+    function handleClickHome() {
+        redirectToHomePage();
+    }
 </script>
 
 <div class="container app-header">
@@ -8,7 +14,14 @@
         {@render children?.()}
     </div>
     <div class="flex-spacer"></div>
-    <h1 class="app-title">نظام دورتنا</h1>
+    <div
+        style="cursor: pointer;"
+        onclick={() => handleClickHome()}
+        onkeydown={ch => {}}
+        role='button'
+        tabindex='0'>
+        <h1 class="app-title">دورتنا</h1>
+    </div>
 </div>
 
 <style>
@@ -52,6 +65,7 @@
         margin-inline-start: 10px;
         padding: 15px 0px;
         word-break: break-word;
+        user-select: none;
     }
 
     @media (max-width: 900px) {

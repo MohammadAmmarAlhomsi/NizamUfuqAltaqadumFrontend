@@ -5,6 +5,7 @@ import TableRenderer from "../base-table/table-renderer.svelte";
 import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
 import { PageRecitationRewardCancellationRecord as CancellationRecord } from "$lib/sdk/models/page-recitation-reward-cancellation-record.svelte";
 import { IndividualActivity } from "$lib/sdk/models/indivisual-activity.svelte";
+import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
 
 /**
  * @typedef PageRecitationRewardRecord
@@ -15,6 +16,7 @@ import { IndividualActivity } from "$lib/sdk/models/indivisual-activity.svelte";
 /** 
  * @typedef StudentAttendanceDaySummary 
  * @property {AttendanceDay} attendanceDay
+ * @property {StudentAttendanceRecord} attendanceRecord
  * @property {String} attendanceStatus
  * @property {PageRecitationRecord[]} recitationRecords
  * @property {CancellationRecord[]} cancellationRecords
@@ -145,11 +147,17 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                 }
             },
             {
-                displayName: 'الملاحظات',
+                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ATTENDANCE_POINT_COLUMN_DISPLAY_NAME,
                 render: (element) => {
-                    let notes = [element.summary.groupActivityNotes, element.summary.indivsualActivityNotes];
-                    notes = notes.filter(n => n != undefined && n != null && n.length >= 2);
-                    return notes.length > 0 ? notes.join(' - ') : '------';
+                    return element.summary.attendancePoints
+                }
+            },
+            {
+                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_MEMORIZATION_POINT_COLUMN_DISPLAY_NAME,
+                render: (element) => {
+                    return element.summary.pageRecitationPointsRecords
+                        .map(record => record.points)
+                        .reduce((x1, x2) => x1 + x2, 0);
                 }
             },
             {
@@ -164,20 +172,6 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                 }
             },
             {
-                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_MEMORIZATION_POINT_COLUMN_DISPLAY_NAME,
-                render: (element) => {
-                    return element.summary.pageRecitationPointsRecords
-                        .map(record => record.points)
-                        .reduce((x1, x2) => x1 + x2, 0);
-                }
-            },
-            {
-                displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ATTENDANCE_POINT_COLUMN_DISPLAY_NAME,
-                render: (element) => {
-                    return element.summary.attendancePoints
-                }
-            },
-            {
                 displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_POINTS_COLUMN_DISPLAY_NAME,
                 render: (element) => {
                     let attendancePoints = element.summary.attendancePoints;
@@ -186,7 +180,15 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                         .reduce((x1, x2) => x1 + x2, 0);
                     return attendancePoints + recitationPoints;
                 }
-            }
+            },
+            {
+                displayName: 'الملاحظات',
+                render: (element) => {
+                    let notes = [element.summary.groupActivityNotes, element.summary.indivsualActivityNotes];
+                    notes = notes.filter(n => n != undefined && n != null && n.length >= 2);
+                    return notes.length > 0 ? notes.join(' - ') : '------';
+                }
+            },
         ];
     }
 }

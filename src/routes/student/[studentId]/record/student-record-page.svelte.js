@@ -84,7 +84,7 @@ export class StudentRecordPage {
         this.attendanceSummaryTable.addEventListener('clickRow', e => {
             /** @type {StudentAttendanceRecord} */ let attendanceRecord = e.detail.element.summary.attendanceRecord;
             console.log($state.snapshot(attendanceRecord));
-            // window.location.href = `/halqa/${this.student.halqaId}/attendance/${attendanceRecord.halqaAttendanceRecordId}/student-attendance/${attendanceRecord.id}`;
+            window.location.href = `/halqa/${this.student.halqaId}/attendance/${attendanceRecord.halqaAttendanceRecordId}/student-attendance/${attendanceRecord.id}`;
         });
 
         this.totalAttendancePoints = this.attendanceSummaryTable.elements

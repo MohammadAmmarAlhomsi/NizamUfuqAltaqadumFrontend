@@ -1,11 +1,12 @@
 import { PageRecitationRecord } from "$lib/sdk/models/page-recitation-record.svelte";
 import { BaseTable, BaseTableElement } from "../base-table/base-table.svelte";
 import { SystemButton } from "../forms/system-button/system-button.svelte";
-import TableRenderer from "../base-table/table-renderer.svelte";
-import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
 import { PageRecitationRewardCancellationRecord as CancellationRecord } from "$lib/sdk/models/page-recitation-reward-cancellation-record.svelte";
 import { IndividualActivity } from "$lib/sdk/models/indivisual-activity.svelte";
 import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
+
+import TableRenderer from "../base-table/table-renderer.svelte";
+import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
 
 /**
  * @typedef PageRecitationRewardRecord
@@ -103,8 +104,8 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                     return `
                         <style>
                             .page-boxes {
-                                display: flex;
-                                flex-wrap: wrap;
+                                display: grid;
+                                grid-template-columns: repeat(7, auto);
                                 gap: 10px;
                                 justify-content: center;
                             }
@@ -163,7 +164,6 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
             {
                 displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_ACTIVITIES_POINT_COLUMN_DISPLAY_NAME,
                 render: (element) => {
-                    console.log($state.snapshot(element.summary.indivsualActivities), "<=====")
                     let points = element.summary.indivsualActivities
                         .map(r => r.weight)
                         .reduce((x1, x2) => x1 + x2, 0);
@@ -180,7 +180,7 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                         .reduce((x1, x2) => x1 + x2, 0);
                     return attendancePoints + recitationPoints;
                 }
-            },
+            },    
             {
                 displayName: 'الملاحظات',
                 render: (element) => {

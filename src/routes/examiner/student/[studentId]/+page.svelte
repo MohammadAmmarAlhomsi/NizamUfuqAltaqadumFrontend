@@ -153,13 +153,15 @@
             return;
         }
 
+        if (!await deleteJuzuAccess(juzuAccessRecord.id)) {
+            alert('لا يمكن إغلاق الجزء');
+        }
+
         try {
-            await deleteJuzuAccess(juzuAccessRecord.id);
             await loadOpenedAjza();
             selectJuzu(null);
         } catch (e) {
             console.error(e);
-            alert('حدث خطأ أثناء إغلاق الجزء.');
         }
     }
 

@@ -68,6 +68,7 @@
     {/if}
 
     <div class={styles["save-button-container"]}>
+        <div style="flex: 1;"></div>
         <Button onclick={source.submit}>حفظ</Button>
     </div>
 </div>

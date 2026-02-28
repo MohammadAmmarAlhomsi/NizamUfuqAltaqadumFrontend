@@ -1,6 +1,7 @@
 import { APIModel } from "../api-model.svelte";
 import { APIGet, APIGetArrayModel } from "../api-request";
 import { host } from "../host";
+import { loadAccessToken } from "../auth";
 import { PageRecitationRecord } from "./page-recitation-record.svelte";
 import { QuranPage } from "./quran-page.svelte";
 import { JuzuAssessment } from "./juzu-assessment.svelte";
@@ -115,5 +116,33 @@ export class Student extends APIModel {
 
     getAssessedAjza = async () => {
         return await APIGetArrayModel(`${host}/api/juzu-assessment/student/${this.id}/all`, JuzuAssessment)
+    }
+
+    getRecordPdf = async () => {
+        const { token } = loadAccessToken();
+        const response = await fetch(`${host}/api/student/${this.id}/record/pdf`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error(errorData.error || "Failed to generate PDF");
+            return false;
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const safeName = this.fullName ? this.fullName.replace(/\s+/g, "_") : "student";
+        link.href = url;
+        link.download = `سجل_${safeName}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        return true;
     }
 }

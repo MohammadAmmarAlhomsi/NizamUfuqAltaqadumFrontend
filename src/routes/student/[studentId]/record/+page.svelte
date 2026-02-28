@@ -2,11 +2,9 @@
     import { StudentRecordPage } from "./student-record-page.svelte";
     import { page } from "$app/state";
     import { onMount } from "svelte";
-    import { SystemButton } from "$lib/components/forms/system-button/system-button.svelte";
-    
+    import Button from "$lib/components/Button.svelte";
     import Header from "$lib/components/layout/Header.svelte";
     import TableRenderer from "$lib/components/base-table/table-renderer.svelte";
-    import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
     import StudentsSummariesTableRenderer from "$lib/components/students-summaries-table/students-summaries-table-renderer.svelte";
 
     import styles from "./student-record-page.module.css";
@@ -14,20 +12,23 @@
     let studentId = $state(page.params.studentId);
     let sourcePage = new StudentRecordPage(studentId);
     
-    let button = $state(new SystemButton('اضغط هنا!'));
-    button.addEventListener('click', () => {
-        alert('hi there!!!');
-    })
-
     onMount(async () => {
         await sourcePage.onMount();
     });
+
+    async function handleExportPdf() {
+        if (!sourcePage?.student) return;
+        await sourcePage.student.getRecordPdf();
+    }
 </script>
 
-<div class={styles['container']}>
+    <div class={styles['container']}>
     {#if sourcePage?.student}
         <Header>
-            <h1>{sourcePage.student.fullName}</h1>
+            <div class={styles['header-row']}>
+                <h1>{sourcePage.student.fullName}</h1>
+                <Button onclick={handleExportPdf}>تصدير PDF</Button>
+            </div>
         </Header>
 
         <div style="height: 150px;"></div>

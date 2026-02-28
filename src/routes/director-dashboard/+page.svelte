@@ -55,6 +55,7 @@
                 </div>
             </div>
             <div class="dashboard-action">
+                <Button onclick={() => window.location.href = '/whatsapp'}>واتساب</Button>
                 <Button onclick={source.handleCreateNew}>➕ إضافة جديد</Button>
             </div>
         </div>
@@ -129,6 +130,7 @@
     .dashboard-action {
         display: flex;
         justify-content: flex-end;
+        gap: 12px;
         min-width: 180px;
     }
 

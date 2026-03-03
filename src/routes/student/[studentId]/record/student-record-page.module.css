@@ -1,5 +1,6 @@
 .table-container {
     width: 80%;
+    margin-inline: auto;
 }
 
 .container { 
@@ -8,6 +9,17 @@
     display: flex;
     justify-content: center;
     align-items: start;
+}
+
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
 }
 
 .attended {

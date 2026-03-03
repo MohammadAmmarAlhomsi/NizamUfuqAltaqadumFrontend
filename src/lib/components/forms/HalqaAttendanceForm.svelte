@@ -4,6 +4,8 @@
     import DropdownField from "../DropdownField.svelte";
     import StudentAttendanceCell from "./StudentAttendanceCell.svelte";
     import NotesForm from "./NotesForm.svelte";
+    import WhatsAppNotificationRenderer from "$lib/components/whatsapp-notification/whatsapp-notification-renderer.svelte";
+    import { WhatsAppNotificationPopup } from "$lib/components/whatsapp-notification/whatsapp-notification.svelte.js";
 
     import { page } from "$app/state";
     import { fetchHalqaById, updateHalqaAsync, updateStudentAttendance } from "$lib/sdk/halqa";
@@ -18,6 +20,8 @@
     import { Student } from "$lib/sdk/models/student.svelte";
 
     dayjs.locale('ar');
+
+    let whatsappPopup = $state(new WhatsAppNotificationPopup());
 
     /**
      * @type {{halqaAttendanceId: string, halqa: Halqa, date:str}}
@@ -103,6 +107,26 @@
             await studentAttendanceRecord.save();
             // await loadStudentAttendances();
         }
+
+        // Trigger WhatsApp notification popup on absence without excuse only
+        if (studentAttendanceRecord.status == 'AbscentWithoutExecuse') {
+            const student = studentAttendanceRecord.student;
+            if (student) {
+                const dateStr = halqaAttendance?.attendanceDay?.date
+                    ? dayjs(halqaAttendance.attendanceDay.date).format('DD/MM/YYYY')
+                    : '';
+
+                whatsappPopup.open({
+                    studentId: student.id || studentAttendanceRecord.studentId,
+                    studentName: student.fullName || '',
+                    halqaName: halqa?.name || '',
+                    attendanceStatus: studentAttendanceRecord.status,
+                    date: dateStr,
+                    fatherPhone: student.fatherPhoneNumber || '',
+                    motherPhone: student.motherPhoneNumber || ''
+                });
+            }
+        }
     }
 
     async function handleSubmit() {
@@ -156,6 +180,8 @@
         onclickSave = {handleSaveStudentAttendanceNotes}
     />
 {/if}
+
+<WhatsAppNotificationRenderer bind:source={whatsappPopup} />
 
 <style>
     .container {

@@ -93,6 +93,10 @@ export class StudentRecordPage {
 
         this.totalRecitationPoints = this.attendanceSummaryTable.elements
             .map(element => element.summary.pageRecitationPointsRecords.map(r => r.points).reduce((x1, x2) => x1 + x2, 0))
+            .reduce((x1, x2) => x1 + x2, 0) 
+                + 
+            this.attendanceSummaryTable.elements
+            .map(element => element.summary.pageCancellationWeightRecords.map(r => r.points).reduce((x1, x2) => x1 + x2, 0))
             .reduce((x1, x2) => x1 + x2, 0);
 
         this.totalActivitiesPoints = this.attendanceSummaryTable.elements

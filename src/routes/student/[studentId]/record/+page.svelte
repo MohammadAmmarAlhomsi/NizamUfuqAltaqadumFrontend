@@ -61,11 +61,11 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td>{sourcePage.totalActivitiesPoints}</td>
-                        <td>{sourcePage.totalRecitationPoints}</td>
                         <td>{sourcePage.totalAttendancePoints}</td>
+                        <td>{sourcePage.totalRecitationPoints}</td>
+                        <td>{sourcePage.totalActivitiesPoints}</td>
                         <td>{sourcePage.totalPoints}</td>
+                        <td></td>
                     </tr>
                 </TableRenderer>
             </div>

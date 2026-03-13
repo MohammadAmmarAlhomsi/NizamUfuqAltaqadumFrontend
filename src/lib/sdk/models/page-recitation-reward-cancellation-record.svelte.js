@@ -17,9 +17,10 @@ export class PageRecitationRewardCancellationRecord extends APIModel {
         return await APIGetArrayModel(`${host}/api/page-recitation-reward-cancellation/student/${studentId}/reward-cancellation-record/accessible/all`, PageRecitationRewardCancellationRecord);
     }
 
-    constructor(pageRecitationRecordId = '') {
+    constructor(pageRecitationRecordId = '', attendanceDayId = '') {
         super(); 
 
-        this.pageRecitationRecordId = $state(pageRecitationRecordId);
+        /** @type {String} */ this.pageRecitationRecordId = $state(pageRecitationRecordId);
+        /** @type {String} */ this.attendanceDayId = $state(attendanceDayId);
     }
 }

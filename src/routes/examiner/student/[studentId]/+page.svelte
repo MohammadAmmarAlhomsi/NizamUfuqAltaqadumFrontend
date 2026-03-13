@@ -13,6 +13,7 @@
     import { deleteJuzuAccess, fetchAllJuzuAccesses, registerJuzuAccess } from '$lib/sdk/juzu-access';
     import { deleteJuzuAssessment, fetchStudentAssessments } from '$lib/sdk/juzu-assessment';
     import JuzuAssessmentForm from '$lib/components/forms/JuzuAssessmentForm.svelte';
+  import LoadingPanel from '$lib/components/LoadingPanel.svelte';
 
     let examiner = $state(null);
     let studentId = $state(page.params.studentId);

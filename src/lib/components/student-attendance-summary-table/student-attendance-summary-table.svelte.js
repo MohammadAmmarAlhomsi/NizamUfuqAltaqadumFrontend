@@ -4,6 +4,7 @@ import { SystemButton } from "../forms/system-button/system-button.svelte";
 import { PageRecitationRewardCancellationRecord as CancellationRecord } from "$lib/sdk/models/page-recitation-reward-cancellation-record.svelte";
 import { IndividualActivity } from "$lib/sdk/models/indivisual-activity.svelte";
 import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
+import { QuranPage } from "$lib/sdk/models/quran-page.svelte";
 
 import TableRenderer from "../base-table/table-renderer.svelte";
 import SystemButtonRenderer from "$lib/components/forms/system-button/system-button-renderer.svelte";
@@ -12,6 +13,12 @@ import SystemButtonRenderer from "$lib/components/forms/system-button/system-but
  * @typedef PageRecitationRewardRecord
  * @property {string} pageRecitationRecordId
  * @property {int} points
+ */
+
+/**
+ * @typedef PageCancellationWeightRecord
+ * @property {QuranPage} page
+ * @property {Number} points
  */
 
 /** 
@@ -26,6 +33,7 @@ import SystemButtonRenderer from "$lib/components/forms/system-button/system-but
  * @property {String} groupActivityNotes
  * @property {int} attendancePoints
  * @property {PageRecitationRewardRecord[]} pageRecitationPointsRecords
+ * @property {PageCancellationWeightRecord[]} pageCancellationWeightRecords
 */
 
 /** 
@@ -38,6 +46,23 @@ function mapStatus(status) {
     if (status == 'AttendedLate') return 'حاضر متأخر';
     if (status == 'Attended') return 'حاضر';
     return '-----'
+}
+
+/** 
+ * @param {Number} pageNumber
+ * @param {Number} points
+ * @param {String} boxClass
+ */
+function renderPageBox(pageNumber, points, boxClass) {
+    return `
+        <span class="page-box ${boxClass}">
+            <p>${pageNumber}</p>
+
+            <p style='font-size: 7px; direction:ltr;'>
+                ${points || 0}
+            </p>
+        </span>
+    `
 }
 
 /**
@@ -89,17 +114,18 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                     const records = element.summary.recitationRecords;
                     const cancellationRecords = element.summary.cancellationRecords;
                     const recitationRewardRecords = element.summary.pageRecitationPointsRecords;
+                    const cancellationRewardRecords = element.summary.pageCancellationWeightRecords;
 
-                    if (
-                        element.summary.attendanceStatus !== 'Attended' &&
-                        element.summary.attendanceStatus !== 'AttendedLate'
-                    ) {
-                        return '-----';
-                    }
+                    // if (
+                    //     element.summary.attendanceStatus !== 'Attended' &&
+                    //     element.summary.attendanceStatus !== 'AttendedLate'
+                    // ) {
+                    //     return '-----';
+                    // }
 
-                    if (!records || records.length === 0) {
-                        return `<span style="opacity:0.5">لا تسميع جديد</span>`;
-                    }
+                    // if (!records || records.length === 0) {
+                    //     return `<span style="opacity:0.5">لا تسميع جديد</span>`;
+                    // }
 
                     return `
                         <style>
@@ -130,19 +156,21 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                         </style>
 
                         <div class="page-boxes">
-                            ${records
-                            .map(r => {
-                                let rewardRecord = recitationRewardRecords.find(rewardRecord => rewardRecord.pageRecitationRecordId == r.id);
+                            ${
+                                records
+                                .map(r => {
+                                    let rewardRecord = recitationRewardRecords.find(rewardRecord => rewardRecord.pageRecitationRecordId == r.id);
+                                    return renderPageBox(r.page.number, rewardRecord?.points, 'page-box');
+                                })
+                                .join('')
+                            }
 
-                                return `
-                                    <span class="page-box ${cancellationRecords.find(c => c.pageRecitationRecordId == r.id) != null ? 'cancelled-page-box' : ''}">
-                                        <p>${r.page.number}</p>
-
-                                        <p style='font-size: 7px;'>${rewardRecord?.points || 0}</p>
-                                    </span>
-                                `
-                            })
-                            .join('')}
+                            ${
+                                cancellationRewardRecords
+                                .map(r => {
+                                    return renderPageBox(r.page.number, r.points, 'page-box cancelled-page-box')
+                                })
+                            }
                         </div>
                     `;
                 }
@@ -156,9 +184,17 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
             {
                 displayName: StudentAttendanceDaySummaryTableElement.STUDENT_TOTAL_MEMORIZATION_POINT_COLUMN_DISPLAY_NAME,
                 render: (element) => {
-                    return element.summary.pageRecitationPointsRecords
-                        .map(record => record.points)
-                        .reduce((x1, x2) => x1 + x2, 0);
+                    let points = element.summary.pageRecitationPointsRecords
+                            .map(record => record.points)
+                            .reduce((x1, x2) => x1 + x2, 0) 
+                            + 
+                        element.summary.pageCancellationWeightRecords
+                            .map(record => record.points)
+                            .reduce((x1, x2) => x1 + x2, 0);
+
+                    return `
+                        <p style="direction:ltr;">${points}</p>
+                    `
                 }
             },
             {
@@ -178,7 +214,10 @@ export class StudentAttendanceDaySummaryTableElement extends BaseTableElement {
                     let recitationPoints = element.summary.pageRecitationPointsRecords
                         .map(record => record.points)
                         .reduce((x1, x2) => x1 + x2, 0);
-                    return attendancePoints + recitationPoints;
+                    let cancellationPoints = element.summary.pageCancellationWeightRecords
+                        .map(record => record.points)
+                        .reduce((x1, x2) => x1 + x2, 0)
+                    return attendancePoints + recitationPoints + cancellationPoints;
                 }
             },    
             {

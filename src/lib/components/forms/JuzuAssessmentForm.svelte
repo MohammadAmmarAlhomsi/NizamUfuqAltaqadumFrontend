@@ -3,6 +3,7 @@
   import TextAreaField from "../TextAreaField.svelte";
   import FormInputField from "../FormInputField.svelte";
   import { registerJuzuAssessment } from "$lib/sdk/juzu-assessment";
+  import LoadingPanel from "../LoadingPanel.svelte";
 
   let {
     show = $bindable(false),
@@ -16,6 +17,7 @@
   let notes = $state("");
   let mark = $state("");
   let errorText = $state("");
+  let isLoading = $state(false);
 
   function validateInput() {
     if (!mark || isNaN(mark) || Number(mark) < 0) {
@@ -28,7 +30,7 @@
 
   async function handleRegister() {
     if (!validateInput()) return;
-
+    isLoading = true;
     try {
       const dto = {
         studentId: student.id,
@@ -39,7 +41,6 @@
 
       const createdAssessment = await registerJuzuAssessment(dto);
 
-      // Reset form
       notes = "";
       mark = "";
       show = false;
@@ -48,6 +49,7 @@
     } catch (e) {
       errorText = e.message || "حدث خطأ أثناء تسجيل التقييم.";
     }
+    isLoading = false;
   }
 
   function handleCancel() {
@@ -77,6 +79,8 @@
     </div>
   </div>
 {/if}
+
+<LoadingPanel isActive={isLoading}/>
 
 <style>
   .overlay {

@@ -20,7 +20,7 @@
     import { Student } from "$lib/sdk/models/student.svelte";
     import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
     import { PageRecitationRecord } from "$lib/sdk/models/page-recitation-record.svelte";
-    import { PageRecitationRewardCancellationRecord as RewardCancellationRecord } from "$lib/sdk/models/page-recitation-reward-cancellation-record.svelte";
+    import { PageRecitationRewardCancellationRecord, PageRecitationRewardCancellationRecord as RewardCancellationRecord } from "$lib/sdk/models/page-recitation-reward-cancellation-record.svelte";
 
     /** @type {{studentAttendanceRecord: StudentAttendanceRecord}} */
     let { studentAttendanceRecord = $bindable(null), ...props } = $props();
@@ -204,7 +204,10 @@
         const page = highlightedPages[0];
 
         try {
-            await cancelPageRecitationReward(page.recitationPageRecordId);
+            let cancellationRecord = new PageRecitationRewardCancellationRecord(
+                page.page
+            )
+
             await loadQuranPages();
             selectPage(null);
         } catch (e) {

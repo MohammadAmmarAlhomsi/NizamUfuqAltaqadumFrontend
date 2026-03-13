@@ -6,6 +6,7 @@ import { PageRecitationRewardCancellationRecord as CancellationRecord, PageRecit
 import { Student } from "$lib/sdk/models/student.svelte";
 import { StudentAttendanceRecord } from "$lib/sdk/models/student-attendance-record.svelte";
 import { PageRecitationBox } from "$lib/components/page-recitation-box/page-recitation-box.svelte";
+import { HalqaAttendanceRecord } from "$lib/sdk/models/halqa-attendance-record.svelte";
 
 /** @typedef {'recited-and-not-rewarded-page' | 'recitd-and-rewarded-page' | 'not-recited-page' } QuranPageCategoryName */
 /** @typedef {{name: string, func: function}} Behaviour */
@@ -204,9 +205,11 @@ export class StudentAttendanceForm extends Renderer {
 
     registerCancellationRecords = async () => {
         let selectedRecitationRecords = this.getSelectedRecitationRecords();
-        
+        let halqaAttendanceRecord = await HalqaAttendanceRecord.getById(this.studentAttendanceRecord.halqaAttendanceRecordId);
         let cancellationRecords = selectedRecitationRecords.map(recitationRecord => {
-            return new CancellationRecord(recitationRecord.id);
+            let cancellationRecord = new CancellationRecord(recitationRecord.id, halqaAttendanceRecord.attendanceDayId);
+            console.log(cancellationRecord, "cancellation record");
+            return cancellationRecord;
         });
 
         for (let i = 0; i < cancellationRecords.length; i++)
